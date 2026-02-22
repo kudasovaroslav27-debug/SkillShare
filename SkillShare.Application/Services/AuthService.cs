@@ -8,6 +8,7 @@ using SkillShare.Domain.Dto;
 using SkillShare.Domain.Dto.User;
 using SkillShare.Domain.Entities;
 using SkillShare.Domain.Enum;
+using SkillShare.Domain.Interfaces.Databases;
 using SkillShare.Domain.Interfaces.Repositories;
 using SkillShare.Domain.Interfaces.Services;
 using SkillShare.Domain.Result;
@@ -16,6 +17,7 @@ namespace SkillShare.Application.Services;
 
 public class AuthService : IAuthService
 {
+    private readonly IUnitOfWork _unitOfWork;
     private readonly IBaseRepository<User> _userRepository;
     private readonly IBaseRepository<Role> _roleRepository;
     private readonly IBaseRepository<UserToken> _userTokenRepository;
@@ -31,7 +33,8 @@ public class AuthService : IAuthService
         IMapper mapper,
         IBaseRepository<UserToken> userTokenRepository,
         IBaseRepository<Role> roleRepository,
-        IBaseRepository<UserRole> userRoleRepository)
+        IBaseRepository<UserRole> userRoleRepository,
+        IUnitOfWork unitOfWork)
     {
         _userRepository = userRepozitory;
         _tokenService = tokenService;
@@ -40,6 +43,7 @@ public class AuthService : IAuthService
         _userTokenRepository = userTokenRepository;
         _roleRepository = roleRepository;
         _userRoleRepository = userRoleRepository;
+        _unitOfWork = unitOfWork;
     }
 
     public async Task<DataResult<TokenDto>> Login(LoginUserDto dto, CancellationToken ct = default)
@@ -83,7 +87,9 @@ public class AuthService : IAuthService
         {
             user.UserToken.RefreshToken = refreshToken;
             user.UserToken.RefreshTokenExpireTime = DateTime.UtcNow.AddDays(7);
-            await _userTokenRepository.UpdateAsync(user.UserToken);
+
+           _userTokenRepository.Update(user.UserToken);
+           await _userTokenRepository.SaveChangesAsync();
         }
 
         var data = new TokenDto()
@@ -106,33 +112,47 @@ public class AuthService : IAuthService
 
         var passwordHash = HashPassword(dto.Password);
 
-        user = new User()
+        using (var transaction = await _unitOfWork.BeginTransactionAsync())
         {
-            Login = dto.Login,
-            Password = passwordHash,
-            Age = dto.Age,
-            Email = dto.Email,
-            Name = dto.Name,
-            LastName = dto.LastName
-        };
-        await _userRepository.CreateAsync(user);
+            try
+            {
+                user = new User()
+                {
+                    Login = dto.Login,
+                    Password = passwordHash,
+                    Age = dto.Age,
+                    Email = dto.Email,
+                    Name = dto.Name,
+                    LastName = dto.LastName
+                };
+                await _unitOfWork.Users.CreateAsync(user);
 
-        var role = await _roleRepository.GetAll()
-       .FirstOrDefaultAsync(x => x.Name == "Student", ct);
+                await _unitOfWork.SaveChangesAsync();
 
-        if (role == null)
-        {
-            return DataResult<UserDto>.Failure((int)ErrorCodes.RoleNotFound, ErrorMessage.RoleNotFound);
+                var role = await _roleRepository.GetAll()
+                    .FirstOrDefaultAsync(x => x.Name == nameof(Roles.Student), ct);
+
+                if (role == null)
+                {
+                    return DataResult<UserDto>.Failure((int)ErrorCodes.RoleNotFound, ErrorMessage.RoleNotFound);
+                }
+
+                var userRole = new UserRole
+                {
+                    UserId = user.Id,
+                    RoleId = role.Id,
+                };
+                await _unitOfWork.UserRoles.CreateAsync(userRole);
+
+                await _unitOfWork.SaveChangesAsync();
+
+                await transaction.CommitAsync();
+            }
+            catch (Exception)
+            {
+                await transaction.RollbackAsync();
+            }
         }
-
-        var userRole = new UserRole
-        {
-            UserId = user.Id,
-            RoleId = role.Id,
-        };
-
-        await _userRoleRepository.CreateAsync(userRole);
-
         return DataResult<UserDto>.Success(_mapper.Map<UserDto>(user));
     }
 

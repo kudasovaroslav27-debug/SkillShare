@@ -76,9 +76,10 @@ public class RoleService : IRoleService
 
         role.Name = dto.Name;
 
-        await _roleRepository.UpdateAsync(role);
+        var updatedRole = _roleRepository.Update(role);
+        await _roleRepository.SaveChangesAsync();
 
-        return DataResult<RoleDto>.Success(_mapper.Map<RoleDto>(role));
+        return DataResult<RoleDto>.Success(_mapper.Map<RoleDto>(updatedRole));
     }
 
 
@@ -91,7 +92,8 @@ public class RoleService : IRoleService
             return DataResult<RoleDto>.Failure((int)ErrorCodes.RoleNotFound, ErrorMessage.RoleNotFound);
         }
 
-        await _roleRepository.RemoveAsync(role);
+        _roleRepository.Remove(role);
+        await _roleRepository.SaveChangesAsync();
 
         return DataResult<RoleDto>.Success(_mapper.Map<RoleDto>(role));
     }

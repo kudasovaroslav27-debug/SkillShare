@@ -69,7 +69,8 @@ public class CourseService : ICourseService
         {
             return DataResult<CourseDto>.Failure((int)ErrorCodes.CourseNotFound, ErrorMessage.CourseNotFound);
         }
-        await _courseRepository.RemoveAsync(course);
+        _courseRepository.Remove(course);
+        await _courseRepository.SaveChangesAsync();
 
         return DataResult<CourseDto>.Success(_mapper.Map<CourseDto>(course));
     }
@@ -116,8 +117,9 @@ public class CourseService : ICourseService
         course.Description = dto.Description;
         course.Price = dto.Price;
 
-        await _courseRepository.UpdateAsync(course);
+        var updatedCourse = _courseRepository.Update(course);
+        await _courseRepository.SaveChangesAsync();
 
-        return DataResult<CourseDto>.Success(_mapper.Map<CourseDto>(course));
+        return DataResult<CourseDto>.Success(_mapper.Map<CourseDto>(updatedCourse));
     }
 }

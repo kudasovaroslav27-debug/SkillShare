@@ -120,7 +120,8 @@ public class TokenService : ITokenService
         user.UserToken.RefreshToken = newRefreshToken;
         user.UserToken.RefreshTokenExpireTime = _timeProvider.GetUtcNow().UtcDateTime.AddDays(7);
 
-        await _userTokenRepository.UpdateAsync(user.UserToken);
+        _userTokenRepository.Update(user.UserToken);
+        await _userTokenRepository.SaveChangesAsync();
 
         var tokenDto = new TokenDto
         {

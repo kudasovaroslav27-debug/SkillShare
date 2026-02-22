@@ -21,36 +21,36 @@ public class BaseRepository<TEntity> : IBaseRepository<TEntity> where TEntity : 
         return _DbContex.Set<TEntity>();
     }
 
-    public Task<TEntity> CreateAsync(TEntity entity)
+    public async Task<TEntity> CreateAsync(TEntity entity)
     {
         if (entity == null)
             throw new ArgumentNullException("Entity is null");
 
-            _DbContex.Add(entity);
-            _DbContex.SaveChanges();
+          await _DbContex.AddAsync(entity);
 
-        return Task.FromResult(entity);
+        return entity;
     }
 
-    public Task<TEntity> RemoveAsync(TEntity entity)
+    public void Remove(TEntity entity)
     {
         if (entity == null)
             throw new ArgumentNullException("Entity is null");
 
         _DbContex.Remove(entity);
-        _DbContex.SaveChanges();
-
-        return Task.FromResult(entity);
     }
 
-    public  Task<TEntity> UpdateAsync(TEntity entity)
+    public  TEntity Update(TEntity entity)
     {
         if (entity == null)
             throw new ArgumentNullException("Entity is null");
 
         _DbContex.Update(entity);
-        _DbContex.SaveChanges();
 
-        return Task.FromResult(entity);
+        return entity;
+    }
+
+    public async Task<int> SaveChangesAsync()
+    {
+        return await _DbContex.SaveChangesAsync();
     }
 }

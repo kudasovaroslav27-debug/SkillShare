@@ -5,6 +5,7 @@ using Org.BouncyCastle.Crypto;
 using SkillShare.DAL.Interceptors;
 using SkillShare.DAL.Repositories;
 using SkillShare.Domain.Entities;
+using SkillShare.Domain.Interfaces.Databases;
 using SkillShare.Domain.Interfaces.Repositories;
 
 namespace SkillShare.DAL.DependencyInjection;
@@ -27,6 +28,7 @@ public static class DependencyInjection
 
     private static void InitRepositories(this IServiceCollection services)
     {
+        services.AddScoped<IUnitOfWork, UnitOfWork>();
         services.AddScoped<IBaseRepository<User>, BaseRepository<User>>();
         services.AddScoped<IBaseRepository<UserRole>, BaseRepository<UserRole>>();
         services.AddScoped<IBaseRepository<UserToken>, BaseRepository<UserToken>>();
