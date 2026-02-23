@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using SkillShare.Domain.Dto;
 using SkillShare.Domain.Dto.Role;
+using SkillShare.Domain.Dto.UserRole;
 using SkillShare.Domain.Entities;
 using SkillShare.Domain.Result;
 
@@ -42,4 +42,20 @@ public interface IRoleService
     /// <param name="dto"></param>
     /// <returns></returns>
     Task<DataResult<UserRoleDto>> AddRoleForUserAsync(UserRoleDto dto, CancellationToken ct = default);
+
+    /// <summary>
+    /// Удаление роли пользователя
+    /// </summary>
+    /// <param name="dto"></param>
+    /// <param name="ct"></param>
+    /// <returns></returns>
+    Task<DataResult<UserRoleDto>> DeleteRoleForUserAsync(RemoveUserRoleDto dto, CancellationToken ct = default);
+
+    /// <summary>
+    /// Обновление роли у пользователя
+    /// </summary>
+    /// <param name="dto"></param>
+    /// <param name="ct"></param>
+    /// <returns></returns>
+    Task<DataResult<UserRoleDto>> UpdateRoleForUserAsync(UpdateUserRoleDto dto, CancellationToken ct = default);
 }

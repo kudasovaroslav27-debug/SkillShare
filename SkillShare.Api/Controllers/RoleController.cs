@@ -1,7 +1,8 @@
 ﻿using System.Net.Mime;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using SkillShare.Domain.Dto;
 using SkillShare.Domain.Dto.Role;
+using SkillShare.Domain.Dto.UserRole;
 using SkillShare.Domain.Entities;
 using SkillShare.Domain.Interfaces.Services;
 using SkillShare.Domain.Result;
@@ -10,6 +11,7 @@ namespace SkillShare.Api.Controllers;
 
 
 [ApiController]
+[Authorize(Roles ="Admin")]
 public class RoleController : ControllerBase
 {
     private readonly IRoleService _roleService;
@@ -92,4 +94,35 @@ public class RoleController : ControllerBase
         return BadRequest(response);
     }
 
+    /// <summary>
+    /// Удаление роли пользователя
+    /// </summary>
+    /// <param name="dto"></param>
+    /// <returns></returns>
+    [HttpDelete("DeleteRoleForUser")]
+    public async Task<ActionResult<DataResult<Role>>> DeleteRoleForUser(RemoveUserRoleDto dto)
+    {
+        var response = await _roleService.DeleteRoleForUserAsync(dto);
+        if (response.IsSuccess)
+        {
+            return Ok(response);
+        }
+        return BadRequest(response);
+    }
+
+    /// <summary>
+    /// Обновление роли пользователя
+    /// </summary>
+    /// <param name="dto"></param>
+    /// <returns></returns>
+    [HttpPut("UpdateRoleForUser")]
+    public async Task<ActionResult<DataResult<Role>>> UpdateRoleForUser(UpdateUserRoleDto dto)
+    {
+        var response = await _roleService.UpdateRoleForUserAsync(dto);
+        if (response.IsSuccess)
+        {
+            return Ok(response);
+        }
+        return BadRequest(response);
+    }
 }
