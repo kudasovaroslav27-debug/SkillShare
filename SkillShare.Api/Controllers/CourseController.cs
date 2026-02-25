@@ -7,7 +7,9 @@ using SkillShare.Domain.Result;
 
 namespace SkillShare.Api.Controllers;
 
-[Authorize]
+/// <summary>
+/// [Authorize]
+/// </summary>
 [ApiController]
 [ApiVersion("1.0")]
 [Route("api/v{version:apiVersion}/[controller]")]

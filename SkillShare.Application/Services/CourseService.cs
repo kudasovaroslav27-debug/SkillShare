@@ -1,6 +1,7 @@
 ﻿using Mapster;
 using MapsterMapper;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using Serilog;
 using SkillShare.Application.Resources;
 using SkillShare.Domain.Dto.CourseDto;
@@ -9,12 +10,16 @@ using SkillShare.Domain.Enum;
 using SkillShare.Domain.Interfaces.Repositories;
 using SkillShare.Domain.Interfaces.Services;
 using SkillShare.Domain.Interfaces.Validations;
-using SkillShare.Domain.Result; 
+using SkillShare.Domain.Result;
+using SkillShare.Domain.Settings;
+using SkillShare.Producer.Interfaces;
 
 namespace SkillShare.Application.Services;
 
 public class CourseService : ICourseService
 {
+    private readonly IMessageProducer _messageProducer;
+    private readonly IOptions<RabbitMqSettings> _rabbitMqOptions;
     private readonly IBaseRepository<User> _userRepository;
     private readonly IBaseRepository<Course> _courseRepository;
     private readonly ICourseValidator _courseValidator;
@@ -24,13 +29,15 @@ public class CourseService : ICourseService
     public CourseService(IBaseRepository<Course> courseRepository,
         ILogger logger, IMapper mapper,
         ICourseValidator courseValidator,
-        IBaseRepository<User> userRepository)
+        IBaseRepository<User> userRepository, IMessageProducer messageProducer, IOptions<RabbitMqSettings> rabbitMqOptions)
     {
         _courseValidator = courseValidator;
         _courseRepository = courseRepository;
         _logger = logger;
         _mapper = mapper;
         _userRepository = userRepository;
+        _messageProducer = messageProducer;
+        _rabbitMqOptions = rabbitMqOptions;
     }
 
     public async Task<DataResult<CourseDto>> CreateAsync(long userId, CreateCourseDto dto, CancellationToken ct = default)
@@ -52,6 +59,9 @@ public class CourseService : ICourseService
             AuthorId = userId
         };
         await _courseRepository.CreateAsync(course);
+        await _courseRepository.SaveChangesAsync();
+
+        _messageProducer.SendMessage(course, _rabbitMqOptions.Value.RoutingKey, _rabbitMqOptions.Value.ExchangeName);
 
         return DataResult<CourseDto>.Success(_mapper.Map<CourseDto>(course));
     }

@@ -24,11 +24,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\SkillShare.Consumer\SkillShare.Consumer.csproj" />
-    <ProjectReference Include="..\..\SkillShare.Producer\SkillShare.Producer.csproj" />
     <ProjectReference Include="..\SkillShare.Application\SkillShare.Application.csproj" />
+    <ProjectReference Include="..\SkillShare.Consumer\SkillShare.Consumer.csproj" />
     <ProjectReference Include="..\SkillShare.DAL\SkillShare.DAL.csproj" />
     <ProjectReference Include="..\SkillShare.Domain\SkillShare.Domain.csproj" />
+    <ProjectReference Include="..\SkillShare.Producer\SkillShare.Producer.csproj" />
   </ItemGroup>
 
 </Project>
