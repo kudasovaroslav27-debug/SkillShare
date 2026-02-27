@@ -22,6 +22,8 @@ public static class DependencyInjection
     {
         InitMapsterMapping(services);
 
+        services.AddMediatR(cf => cf.RegisterServicesFromAssembly(typeof(DependencyInjection).Assembly));
+
         var options = configuration.GetSection(nameof(RedisSettings));
         var redisUrl = options["Url"];
         var instanceName = options["InstanceName"];

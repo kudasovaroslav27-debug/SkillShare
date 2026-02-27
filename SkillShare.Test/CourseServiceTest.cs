@@ -38,7 +38,7 @@ public class CourseServiceTests
         var mapper = GetMapper();
 
         var reportService = new CourseService(mockRepository.Object, null, mapper, null,
-         null, null, null, mockDistributedCache.Object);
+         null, null, null, mockDistributedCache.Object, null);
 
         // Act
         var result = await reportService.GetByIdAsync(1);
@@ -79,7 +79,8 @@ public class CourseServiceTests
             mockUserRepository.Object,                    
             mockMessageProducer.Object,
             mockOptions.Object,       
-            mockDistributedCache.Object
+            mockDistributedCache.Object,
+            null
         );
 
         var result = await courseService.CreateAsync(user.Id, createCourseDto);
@@ -99,7 +100,7 @@ public class CourseServiceTests
 
         // Act
         var courseService = new CourseService(mockCourseRepository.Object, null, mapper, null,
-        null, null, null, null);
+        null, null, null, null, null);
         var result = await courseService.DeleteAsync(course.Id);
 
         // Assert
@@ -117,7 +118,7 @@ public class CourseServiceTests
 
         // Act
         var courseService = new CourseService(mockCourseRepository.Object, null, mapper, null,
-        null, null, null, null);
+        null, null, null, null, null);
         var result = await courseService.UpdateAsync(updateCourseDto);
 
         // Assert

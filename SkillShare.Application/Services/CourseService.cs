@@ -1,9 +1,11 @@
-﻿using Mapster;
-using MapsterMapper;
+﻿using MapsterMapper;
+using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Options;
 using Serilog;
+using SkillShare.Application.Commands;
+using SkillShare.Application.Queries;
 using SkillShare.Application.Resources;
 using SkillShare.Domain.Dto.CourseDto;
 using SkillShare.Domain.Entities;
@@ -28,6 +30,7 @@ public class CourseService : ICourseService
     private readonly IDistributedCache _distributedCache;
     private readonly ILogger _logger;
     private readonly IMapper _mapper;
+    private readonly IMediator _mediator;
 
     public CourseService(IBaseRepository<Course> courseRepository,
                          ILogger logger,
@@ -36,7 +39,8 @@ public class CourseService : ICourseService
                          IBaseRepository<User> userRepository,
                          IMessageProducer messageProducer,
                          IOptions<RabbitMqSettings> rabbitMqOptions,
-                         IDistributedCache distributedCache)
+                         IDistributedCache distributedCache,
+                         IMediator mediator)
     {
         _courseValidator = courseValidator;
         _courseRepository = courseRepository;
@@ -46,6 +50,7 @@ public class CourseService : ICourseService
         _messageProducer = messageProducer;
         _rabbitMqOptions = rabbitMqOptions;
         _distributedCache = distributedCache;
+        _mediator = mediator;
     }
 
     public async Task<DataResult<CourseDto>> CreateAsync(long userId, CreateCourseDto dto, CancellationToken ct = default)
@@ -58,23 +63,17 @@ public class CourseService : ICourseService
             return DataResult<CourseDto>.Failure((int)ErrorCodes.CourseNotFound, ErrorMessage.CourseNotFound);
         }
 
-        course = new Course()
-        {
-            Title = dto.Title,
-            Description = dto.Description,
-            ParentId = dto.ParentId,
-            Price = dto.Price,
-            AuthorId = userId
-        };
-        await _courseRepository.CreateAsync(course);
-        await _courseRepository.SaveChangesAsync();
+        var newCourse = await _mediator.Send(new CreateCourseCommand(
+            dto.Title,
+            dto.Description,
+            dto.Price,
+            dto.ParentId,
+            userId), ct);
 
-        _messageProducer.SendMessage(course, _rabbitMqOptions.Value.RoutingKey, _rabbitMqOptions.Value.ExchangeName);
+        _messageProducer.SendMessage(newCourse, _rabbitMqOptions.Value.RoutingKey, _rabbitMqOptions.Value.ExchangeName);
 
-        return DataResult<CourseDto>.Success(_mapper.Map<CourseDto>(course));
+        return DataResult<CourseDto>.Success(_mapper.Map<CourseDto>(newCourse));
     }
-
-
 
     public async Task<DataResult<CourseDto>> DeleteAsync(long id, CancellationToken ct = default)
     {
@@ -96,23 +95,21 @@ public class CourseService : ICourseService
 
     public async Task<CollectionResult<CourseDto>> GetByAuthorIdAsync(long AuthorId, CancellationToken ct = default)
     {
-        var course = await _courseRepository.GetAll()
-                .Where(x => x.AuthorId == AuthorId)
-                .ProjectToType<CourseDto>()
-                .ToArrayAsync(ct);
-        if (course == null)
+        var courses = await _mediator.Send(new GetCourseByAuthorIdQuery(AuthorId), ct);
+
+        if (courses == null || !courses.Any())
         {
             return CollectionResult<CourseDto>.Failure((int)ErrorCodes.CourseNotFound, ErrorMessage.CourseNotFound);
         }
-        return CollectionResult<CourseDto>.Success(course);
+        return CollectionResult<CourseDto>.Success(courses.ToList());
     }
+
+
 
     public async Task<DataResult<CourseDto>> GetByIdAsync(long courseId, CancellationToken ct = default)
     {
-        var course = await _courseRepository.GetAll()
-            .Where(x => x.Id == courseId)
-            .ProjectToType<CourseDto>()
-            .FirstOrDefaultAsync(ct);
+        var course = await _mediator.Send(new GetCourseQuery(courseId), new CancellationToken());
+
         if (course == null)
         {
             return DataResult<CourseDto>.Failure((int)ErrorCodes.CourseNotFound, ErrorMessage.CourseNotFound);
@@ -127,19 +124,19 @@ public class CourseService : ICourseService
         var course = await _courseRepository.GetAll()
              .Where(x => x.Id == dto.Id)
              .FirstOrDefaultAsync(ct);
+
         var result = _courseValidator.ValidateOnNull(course);
         if (!result.IsSuccess)
         {
             return DataResult<CourseDto>.Failure((int)ErrorCodes.CourseNotFound, ErrorMessage.CourseNotFound);
         }
 
-        course.Title = dto.Title;
-        course.Description = dto.Description;
-        course.Price = dto.Price;
+        var updatedCourseEntity = await _mediator.Send(new UpdateCourseCommand(
+            dto.Id,
+            dto.Title,
+            dto.Description,
+            dto.Price), ct);
 
-        var updatedCourse = _courseRepository.Update(course);
-        await _courseRepository.SaveChangesAsync();
-
-        return DataResult<CourseDto>.Success(_mapper.Map<CourseDto>(updatedCourse));
+        return DataResult<CourseDto>.Success(_mapper.Map<CourseDto>(updatedCourseEntity));
     }
 }

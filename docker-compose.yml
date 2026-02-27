@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   skillshare.api:
     image: skillshare.api
@@ -12,11 +10,14 @@ services:
     environment:
       - RabbitMQSettings__HostName=rabbitmq 
       - ASPNETCORE_ENVIRONMENT=Development
-      - ConnectionStrings__DefaultConnection=Host=localhost;Port=5432;Database=SkillShare;Username=postgres;Password=postgres
+      - ConnectionStrings__DefaultConnection=Host=skillshare.db;Port=5432;Database=SkillShare;Username=postgres;Password=postgres
       - ConnectionStrings__RabbitMQ=amqp://admin:admin@rabbitmq:5672/
+      - RedisSettings__Url=redis:6379
+      - RedisSettings__InstanceName=local
     depends_on:
       - skillshare.db
-      - rabbitmq 
+      - rabbitmq
+      - redis
     restart: unless-stopped
     networks:
       - mynw
@@ -73,25 +74,41 @@ services:
     networks:
       - mynw
 
+  redis:
+    image: redis:alpine
+    container_name: skillshare-redis
+    ports:
+      - "6379:6379"
+    restart: unless-stopped
+    networks:
+      - mynw
+    volumes:
+      - redis_data:/data
+    command: redis-server --appendonly yes
+
   prometheus:
     image: prom/prometheus
+    container_name: skillshare-prometheus
     ports:
       - "9090:9090"
     volumes:
       - ./prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - prometheus_data:/prometheus
     command:
       - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
     networks:
       - mynw
     
   grafana:
     image: grafana/grafana
+    container_name: skillshare-grafana
     ports:
       - "3000:3000"
     environment:
       - GF_SECURITY_ADMIN_PASSWORD=admin
     volumes:
-      - ./grafana:/var/lib/grafana
+      - grafana_data:/var/lib/grafana
     depends_on:
       - prometheus
     networks:
@@ -104,6 +121,12 @@ volumes:
     name: skillshare_pgadmin_data
   rabbitmq_data: 
     name: skillshare_rabbitmq_data
+  redis_data:
+    name: skillshare_redis_data
+  prometheus_data:
+    name: skillshare_prometheus_data
+  grafana_data:
+    name: skillshare_grafana_data
 
 networks:
   mynw:
