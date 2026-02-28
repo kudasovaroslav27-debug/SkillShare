@@ -5,7 +5,8 @@ namespace SkillShare.Domain.Entities;
 public class User : IEntityId<long>, IAuditable
 {
     public long Id { get; set; }
-    public string Login {  get; set; }
+
+    public string Login { get; set; }
 
     public string Name { get; set; }
 
@@ -21,12 +22,13 @@ public class User : IEntityId<long>, IAuditable
 
     public DateTime UpdateAt { get; set; }
 
+    public virtual List<Role> Roles { get; set; }
 
-    public List<Role> Roles { get; set; }
+    public virtual UserToken UserToken { get; set; }
 
-    public UserToken UserToken { get; set; }
+    public virtual UserRole UserRole { get; set; }
 
-    public List<Course> Courses { get; set; }
+    public virtual ICollection<UserCourseGrade> Grades { get; set; }
 
-    public UserRole UserRole { get; set; }
+    public virtual ICollection<Course> Courses { get; set; }
 }

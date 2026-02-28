@@ -12,15 +12,21 @@ public class Course : IEntityId<int>, IAuditable
 
     public decimal Price { get; set; }
 
-    public long ?ParentId { get; set; }
+    public int? ParentId { get; set; }
+
+    public long AuthorId { get; set; }
 
     public DateTime CreatedAt { get; set; }
 
     public DateTime UpdateAt { get; set; }
 
-    public long AuthorId { get; set; }
+    public virtual Course? Parent { get; set; }
 
-    public User Author { get; set; }  
+    public virtual ICollection<Course> Children { get; set; } 
 
-    public List<Lesson> Lessons { get; set; }   
+    public virtual User Author { get; set; }
+
+    public virtual List<Lesson> Lessons { get; set; }
+
+    public virtual List<UserCourseGrade> Grades { get; set; }
 }
