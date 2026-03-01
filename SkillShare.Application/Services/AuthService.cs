@@ -82,6 +82,7 @@ public class AuthService : IAuthService
 
             };
             await _userTokenRepository.CreateAsync(userToken);
+            await _userTokenRepository.SaveChangesAsync();
         }
         else
         {

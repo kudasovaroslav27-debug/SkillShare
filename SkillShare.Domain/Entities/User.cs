@@ -24,7 +24,7 @@ public class User : IEntityId<long>, IAuditable
 
     public virtual List<Role> Roles { get; set; }
 
-    public virtual UserToken UserToken { get; set; }
+    public UserToken UserToken { get; set; }
 
     public virtual UserRole UserRole { get; set; }
 
