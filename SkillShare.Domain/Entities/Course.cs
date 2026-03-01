@@ -20,13 +20,13 @@ public class Course : IEntityId<int>, IAuditable
 
     public DateTime UpdateAt { get; set; }
 
-    public virtual Course? Parent { get; set; }
+    public Course? Parent { get; set; }
 
-    public virtual ICollection<Course> Children { get; set; } 
+    public ICollection<Course> Children { get; set; } 
 
-    public virtual User Author { get; set; }
+    public User Author { get; set; }
 
-    public virtual List<Lesson> Lessons { get; set; }
+    public List<Lesson> Lessons { get; set; }
 
-    public virtual List<UserCourseGrade> Grades { get; set; }
+    public List<UserCourseGrade> Grades { get; set; }
 }

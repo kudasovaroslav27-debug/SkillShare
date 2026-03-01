@@ -33,7 +33,7 @@ public class CourseController : ControllerBase
     }
 
     [HttpGet("{id}")]
-    public async Task<ActionResult<CourseDto>> GetCourse(long id)
+    public async Task<ActionResult<CourseDto>> GetCourse(int id)
     {
         var user = User;
         var response = await _courseService.GetByIdAsync(id);
@@ -45,7 +45,7 @@ public class CourseController : ControllerBase
     }
 
     [HttpDelete("DeleteCourseById")]
-    public async Task<ActionResult<DataResult<CourseDto>>> DeleteCourseById(long id)
+    public async Task<ActionResult<DataResult<CourseDto>>> DeleteCourseById(int id)
     {
         var response = await _courseService.DeleteAsync(id);
         if (response.IsSuccess)

@@ -13,6 +13,7 @@ public enum ErrorCodes
     InvalidClientRequest = 1003,
     UserRolesNotFound = 1004,
     UserAlreadyExistsRole = 1005,
+    GradeNotFound = 1006,
 
     CourseNotFound = 2001,
     CourseAlreadyExists = 2002,
@@ -27,6 +28,12 @@ public enum ErrorCodes
     RoleAlreadyExists = 5001,
     RoleNotFound = 5002,
 
-    ValidError = 6001
+    ValidError = 6001,
+
+    QuestionNotFound = 7001,
+
+    LessonNotFound = 8001,
+
+    AnswerNotFound = 9001
 
 }

@@ -7,9 +7,16 @@ using Microsoft.Extensions.DependencyInjection;
 using SkillShare.Application.Services;
 using SkillShare.Application.Validations;
 using SkillShare.Application.Validations.FluentValidations.Course;
+using SkillShare.Application.Validations.FluentValidations.Lesson;
+using SkillShare.Application.Validations.FluentValidations.Question;
 using SkillShare.Application.Validations.FluentValidations.Role;
+using SkillShare.Application.Validations.FluentValidations.StudentAnswer;
+using SkillShare.Domain.Dto;
 using SkillShare.Domain.Dto.CourseDto;
+using SkillShare.Domain.Dto.Lesson;
+using SkillShare.Domain.Dto.Question;
 using SkillShare.Domain.Dto.Role;
+using SkillShare.Domain.Dto.StudentAnswer;
 using SkillShare.Domain.Interfaces.Services;
 using SkillShare.Domain.Interfaces.Validations;
 using SkillShare.Domain.Settings;
@@ -47,8 +54,21 @@ public static class DependencyInjection
         services.AddScoped<IValidator<UpdateRoleDto>, UpdateRoleValidator>();
         services.AddScoped<IValidator<CreateRoleDto>, CreateRoleValidator>();
 
+        services.AddScoped<IValidator<CreateQuestionDto>, CreateQuestionDtoValidator>();
+        services.AddScoped<IValidator<QuestionDto>, QuestionDtoValidator>();
 
+        services.AddScoped<IValidator<LessonDto>, LessonDtoValidator>();
+        services.AddScoped<IValidator<CreateLessonDto>, CreateLessonDtoValidator>();
+        services.AddScoped<IValidator<UpdateLessonDto>, UpdateLessonDtoValidator>();
 
+        services.AddScoped<IValidator<StudentAnswerDto>, StudentAnswerDtoValidator>();
+        services.AddScoped<IValidator<CreateStudentAnswerDto>, CreateStudentAnswerDtoValidator>();
+        services.AddScoped<IValidator<UpdateStudentAnswerDto>, UpdateStudentAnswerDtoValidator>();
+
+        services.AddScoped<IUserCourseGradeService, UserCourseGradeService>();
+        services.AddScoped<IStudentAnswerService, StudentAnswerService>();
+        services.AddScoped<ILessonService, LessonService>();
+        services.AddScoped<IQuestionService, QuestionService>();
         services.AddScoped<ICourseService, CourseService>();
         services.AddScoped<IRoleService, RoleService>();
         services.AddScoped<IAuthService, AuthService>();
@@ -62,7 +82,4 @@ public static class DependencyInjection
         services.AddSingleton(config);
         services.AddScoped<IMapper, ServiceMapper>();
     }
-
-
-
 }

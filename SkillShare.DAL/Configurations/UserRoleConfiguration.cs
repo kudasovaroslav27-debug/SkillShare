@@ -23,9 +23,9 @@ public class UserRoleConfiguration : IEntityTypeConfiguration<UserRole>
         builder.HasIndex(ur => ur.RoleId);
 
         builder.HasData(
-           new UserRole { UserId = 1, RoleId = 1 }, // Admin - Admin роль
-           new UserRole { UserId = 2, RoleId = 2 }, // Instructor - Instructor роль
-           new UserRole { UserId = 3, RoleId = 3 }  // bob123 - Student роль
+           new UserRole { UserId = 1, RoleId = 1 },
+           new UserRole { UserId = 2, RoleId = 2 }, 
+           new UserRole { UserId = 3, RoleId = 3 }  
        );
     }
 }

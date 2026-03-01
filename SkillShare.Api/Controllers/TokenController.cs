@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SkillShare.Application.Services;
-using SkillShare.Domain.Dto;
+using SkillShare.Domain.Dto.Token;
 using SkillShare.Domain.Interfaces.Services;
 using SkillShare.Domain.Result;
 

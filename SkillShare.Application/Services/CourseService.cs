@@ -75,7 +75,7 @@ public class CourseService : ICourseService
         return DataResult<CourseDto>.Success(_mapper.Map<CourseDto>(newCourse));
     }
 
-    public async Task<DataResult<CourseDto>> DeleteAsync(long id, CancellationToken ct = default)
+    public async Task<DataResult<CourseDto>> DeleteAsync(int id, CancellationToken ct = default)
     {
         var course = await _courseRepository.GetAll()
             .Where(x => x.Id == id)
@@ -106,7 +106,7 @@ public class CourseService : ICourseService
 
 
 
-    public async Task<DataResult<CourseDto>> GetByIdAsync(long courseId, CancellationToken ct = default)
+    public async Task<DataResult<CourseDto>> GetByIdAsync(int courseId, CancellationToken ct = default)
     {
         var course = await _mediator.Send(new GetCourseQuery(courseId), new CancellationToken());
 

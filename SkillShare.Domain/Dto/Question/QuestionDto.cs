@@ -4,7 +4,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SkillShare.Domain.Dto
-{
-    public record UserTokenDto(long UserId, string RefreshToken);
-}
+namespace SkillShare.Domain.Dto;
+
+public record QuestionDto(int Id, long LessonId, string Description);

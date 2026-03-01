@@ -1,5 +1,4 @@
-﻿
-using SkillShare.Domain.Dto;
+﻿using SkillShare.Domain.Dto.Token;
 using SkillShare.Domain.Dto.User;
 using SkillShare.Domain.Result;
 

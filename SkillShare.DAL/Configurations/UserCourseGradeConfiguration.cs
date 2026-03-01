@@ -22,24 +22,20 @@ public class UserCourseGradeConfiguration : IEntityTypeConfiguration<UserCourseG
             .IsRequired();
 
         builder.HasOne(x => x.Course)
-            .WithMany(c => c.Grades) // Добавь ICollection<UserCourseGrade> Grades в класс Course
+            .WithMany(c => c.Grades) 
             .HasForeignKey(x => x.CourseId)
             .OnDelete(DeleteBehavior.Cascade);
 
-        // 2. Связь с юзером
+
         builder.HasOne(x => x.User)
-            .WithMany(u => u.Grades) // Добавь ICollection<UserCourseGrade> Grades в класс User
+            .WithMany(u => u.Grades) 
             .HasForeignKey(x => x.UserId)
             .OnDelete(DeleteBehavior.Cascade);
 
-        // 3. ИСПРАВЛЕННЫЙ СИДИНГ ДАННЫХ
-        builder.HasData(new UserCourseGrade
-        {
-            Id = 1,
-            UserId = 1,   // Должен существовать в таблице Users
-            CourseId = 1, // Должен существовать в таблице Courses
-            Grade = 4.5f
-        });
+        builder.HasData(
+            new UserCourseGrade { Id = 1, UserId = 1, CourseId = 2, Grade = 4.8f },
+            new UserCourseGrade { Id = 2, UserId = 3, CourseId = 2, Grade = 5.0f }
+        );
     }
 }
 

@@ -166,4 +166,16 @@
   <data name="UserAlreadyExistsRole" xml:space="preserve">
     <value>User already exists role</value>
   </data>
+  <data name="QuestionNotFound" xml:space="preserve">
+    <value>Question not found</value>
+  </data>
+  <data name="LessonNotFound" xml:space="preserve">
+    <value>Lesson not found</value>
+  </data>
+  <data name="GradeNotFound" xml:space="preserve">
+    <value>Grade not found</value>
+  </data>
+  <data name="AnswerNotFound" xml:space="preserve">
+    <value>Answer not found</value>
+  </data>
 </root>

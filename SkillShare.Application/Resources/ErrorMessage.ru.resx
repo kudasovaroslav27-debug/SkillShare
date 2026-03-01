@@ -165,4 +165,16 @@
   <data name="UserAlreadyExistsRole" xml:space="preserve">
     <value>пользователь уже имеет эту роль</value>
   </data>
+  <data name="QuestionNotFound" xml:space="preserve">
+    <value>Вопрос не найден</value>
+  </data>
+  <data name="LessonNotFound" xml:space="preserve">
+    <value>Урок не найден</value>
+  </data>
+  <data name="GradeNotFound" xml:space="preserve">
+    <value>Оценка не найдена</value>
+  </data>
+  <data name="AnswerNotFound" xml:space="preserve">
+    <value>Ответ не найден</value>
+  </data>
 </root>

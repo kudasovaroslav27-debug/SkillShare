@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SkillShare.Domain.Dto;
+namespace SkillShare.Domain.Dto.Token;
 
 public class TokenDto
 {

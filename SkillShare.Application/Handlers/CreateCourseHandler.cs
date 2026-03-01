@@ -14,7 +14,7 @@ public class CreateCourseHandler(IBaseRepository<Course> courseRepository)
         {
             Title = request.Title,
             Description = request.Description,
-            ParentId = (int?)request.ParentId,
+            ParentId = request.ParentId,
             Price = request.Price,
             AuthorId = request.UserId
         };

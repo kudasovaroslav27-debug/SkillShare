@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using SkillShare.Application.Resources;
-using SkillShare.Domain.Dto;
+using SkillShare.Domain.Dto.Token;
 using SkillShare.Domain.Entities;
 using SkillShare.Domain.Enum;
 using SkillShare.Domain.Interfaces.Repositories;

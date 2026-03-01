@@ -43,5 +43,14 @@ public class StudentAnswerConfiguration : IEntityTypeConfiguration<StudentAnswer
                .WithMany() 
                .HasForeignKey(sa => sa.QuestionId)
                .OnDelete(DeleteBehavior.Cascade);
+
+        builder.HasData(new StudentAnswer
+        {
+            Id = 1,
+            StudentId = 3,
+            QuestionId = 1,
+            TeacherId = 2,
+            Score = 5.0f,
+        });
     }
 }

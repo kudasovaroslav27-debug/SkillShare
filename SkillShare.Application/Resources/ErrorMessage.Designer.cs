@@ -61,6 +61,15 @@ namespace SkillShare.Application.Resources {
         }
         
         /// <summary>
+        ///   Ищет локализованную строку, похожую на Ответ не найден.
+        /// </summary>
+        internal static string AnswerNotFound {
+            get {
+                return ResourceManager.GetString("AnswerNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Ищет локализованную строку, похожую на Курс с таким названием уже существует.
         /// </summary>
         internal static string CourseAlreadyExists {
@@ -75,6 +84,15 @@ namespace SkillShare.Application.Resources {
         internal static string CourseNotFound {
             get {
                 return ResourceManager.GetString("CourseNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Оценка не найдена.
+        /// </summary>
+        internal static string GradeNotFound {
+            get {
+                return ResourceManager.GetString("GradeNotFound", resourceCulture);
             }
         }
         
@@ -106,6 +124,15 @@ namespace SkillShare.Application.Resources {
         }
         
         /// <summary>
+        ///   Ищет локализованную строку, похожую на Урок не найден.
+        /// </summary>
+        internal static string LessonNotFound {
+            get {
+                return ResourceManager.GetString("LessonNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Ищет локализованную строку, похожую на Пароль неверный.
         /// </summary>
         internal static string PasswordIsWrong {
@@ -120,6 +147,15 @@ namespace SkillShare.Application.Resources {
         internal static string PasswordNotEqualsPasswordConfirm {
             get {
                 return ResourceManager.GetString("PasswordNotEqualsPasswordConfirm", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Вопрос не найден.
+        /// </summary>
+        internal static string QuestionNotFound {
+            get {
+                return ResourceManager.GetString("QuestionNotFound", resourceCulture);
             }
         }
         

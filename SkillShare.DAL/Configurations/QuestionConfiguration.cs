@@ -26,5 +26,27 @@ public class QuestionConfiguration : IEntityTypeConfiguration<Question>
                .WithOne(a => a.Question)
                .HasForeignKey(a => a.QuestionId)
                .OnDelete(DeleteBehavior.Cascade);
+
+        builder.HasOne(q => q.Lesson)
+           .WithMany(l => l.Questions) 
+           .HasForeignKey(q => q.LessonId)
+           .OnDelete(DeleteBehavior.Cascade);
+
+        builder.HasData(
+            new Question
+            {
+                Id = 1,
+                Description = "Что такое инкапсуляция?",
+                LessonId = 1, 
+                CreatedAt = DateTime.UtcNow
+            },
+            new Question
+            {
+                Id = 2,
+                Description = "В чем разница между классом и структурой?",
+                LessonId = 1,
+                CreatedAt = DateTime.UtcNow
+            }
+        );
     }
 }

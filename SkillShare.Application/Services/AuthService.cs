@@ -4,7 +4,7 @@ using MapsterMapper;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
 using SkillShare.Application.Resources;
-using SkillShare.Domain.Dto;
+using SkillShare.Domain.Dto.Token;
 using SkillShare.Domain.Dto.User;
 using SkillShare.Domain.Entities;
 using SkillShare.Domain.Enum;

@@ -4,7 +4,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SkillShare.Domain.Dto
-{
-    public record LessonDto(int CourseId, string Name, string Content, int Number);
-}
+namespace SkillShare.Domain.Dto.Question;
+
+public record CreateQuestionDto(int LessonId, string Description);

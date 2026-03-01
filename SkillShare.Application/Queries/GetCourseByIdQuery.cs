@@ -8,8 +8,8 @@ using SkillShare.Domain.Dto.CourseDto;
 
 namespace SkillShare.Application.Queries;
 
-public class GetCourseQuery(long courseId) : IRequest<CourseDto?>
+public class GetCourseQuery(int courseId) : IRequest<CourseDto?>
 {
-    public long CourseId { get; set; } = courseId;
+    public int CourseId { get; set; } = courseId;
 }
 
