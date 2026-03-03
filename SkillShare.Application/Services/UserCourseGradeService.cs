@@ -1,19 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Mapster;
+﻿using Mapster;
 using MapsterMapper;
 using Microsoft.EntityFrameworkCore;
 using SkillShare.Application.Resources;
-using SkillShare.Domain.Dto.Role;
-using SkillShare.Domain.Dto.StudentAnswer;
 using SkillShare.Domain.Dto.UserCourseGrade;
-using SkillShare.Domain.Entities;
 using SkillShare.Domain.Enum;
 using SkillShare.Domain.Interfaces.Databases;
-using SkillShare.Domain.Interfaces.Repositories;
 using SkillShare.Domain.Interfaces.Services;
 using SkillShare.Domain.Result;
 

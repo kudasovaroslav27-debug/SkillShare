@@ -6,7 +6,6 @@ using Moq;
 using SkillShare.Application.Services;
 using SkillShare.Domain.Dto.CourseDto;
 using SkillShare.Domain.Entities;
-using SkillShare.Domain.Interfaces.Repositories;
 using SkillShare.Domain.Interfaces.Validations;
 using SkillShare.Domain.Result;
 using SkillShare.Domain.Settings;

@@ -1,5 +1,4 @@
 using Asp.Versioning;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SkillShare.Domain.Dto.CourseDto;
 using SkillShare.Domain.Interfaces.Services;

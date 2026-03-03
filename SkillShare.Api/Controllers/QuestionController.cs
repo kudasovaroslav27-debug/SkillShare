@@ -1,12 +1,6 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using SkillShare.Application.Services;
+﻿using Microsoft.AspNetCore.Mvc;
 using SkillShare.Domain.Dto;
-using SkillShare.Domain.Dto.CourseDto;
 using SkillShare.Domain.Dto.Question;
-using SkillShare.Domain.Dto.Role;
-using SkillShare.Domain.Dto.UserRole;
-using SkillShare.Domain.Entities;
 using SkillShare.Domain.Interfaces.Services;
 using SkillShare.Domain.Result;
 

@@ -1,11 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using SkillShare.Domain.Dto.Role;
+﻿using SkillShare.Domain.Dto.Role;
 using SkillShare.Domain.Dto.UserRole;
-using SkillShare.Domain.Entities;
 using SkillShare.Domain.Result;
 
 namespace SkillShare.Domain.Interfaces.Services;

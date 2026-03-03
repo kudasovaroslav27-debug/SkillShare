@@ -1,5 +1,4 @@
-﻿using System.Configuration;
-using FluentValidation;
+﻿using FluentValidation;
 using Mapster;
 using MapsterMapper;
 using Microsoft.Extensions.Configuration;

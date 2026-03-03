@@ -1,9 +1,3 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace SkillShare.Domain.Dto.CourseDto;
+﻿namespace SkillShare.Domain.Dto.CourseDto;
 
 public record CourseDto(string Title, string Description, decimal Price, long AuthorId, int Id);

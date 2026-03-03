@@ -1,6 +1,4 @@
-﻿using System.Net.Mime;
-using System.Runtime.InteropServices;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SkillShare.Domain.Dto.Role;
 using SkillShare.Domain.Dto.UserRole;

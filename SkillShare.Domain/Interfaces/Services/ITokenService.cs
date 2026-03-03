@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Claims;
-using System.Text;
-using System.Threading.Tasks;
-using MySqlX.XDevAPI.Common;
+﻿using System.Security.Claims;
 using SkillShare.Domain.Dto.Token;
 using SkillShare.Domain.Entities;
 using SkillShare.Domain.Result;

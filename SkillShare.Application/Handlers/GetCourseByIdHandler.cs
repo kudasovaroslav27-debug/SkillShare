@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Mapster;
+﻿using Mapster;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using SkillShare.Application.Queries;

@@ -6,7 +6,6 @@ using SkillShare.Consumer.DependencyInjection;
 using SkillShare.DAL.DependencyInjection;
 using SkillShare.Domain.Settings;
 using SkillShare.Producer.DependencyInjection;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 namespace SkillShare.Api;
 
 public class Program

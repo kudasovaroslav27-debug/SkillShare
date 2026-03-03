@@ -7,7 +7,6 @@ using SkillShare.Domain.Dto.UserRole;
 using SkillShare.Domain.Entities;
 using SkillShare.Domain.Enum;
 using SkillShare.Domain.Interfaces.Databases;
-using SkillShare.Domain.Interfaces.Repositories;
 using SkillShare.Domain.Interfaces.Services;
 using SkillShare.Domain.Result;
 

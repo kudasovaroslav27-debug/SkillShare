@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using FluentValidation;
-using SkillShare.Domain.Dto.CourseDto;
+﻿using FluentValidation;
 using SkillShare.Domain.Dto.User;
 
 namespace SkillShare.Application.Validations.FluentValidations.User;

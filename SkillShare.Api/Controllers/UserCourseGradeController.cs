@@ -1,6 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using SkillShare.Application.Services;
-using SkillShare.Domain.Dto.Lesson;
 using SkillShare.Domain.Dto.UserCourseGrade;
 using SkillShare.Domain.Interfaces.Services;
 using SkillShare.Domain.Result;

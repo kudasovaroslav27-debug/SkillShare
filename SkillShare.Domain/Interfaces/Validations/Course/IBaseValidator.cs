@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using SkillShare.Domain.Entities;
-using SkillShare.Domain.Result;
+﻿using SkillShare.Domain.Result;
 
 namespace SkillShare.Domain.Interfaces.Validations;
 

@@ -1,6 +1,4 @@
 ﻿using System.Net;
-using Serilog;
-using SkillShare.Domain.Enum;
 using SkillShare.Domain.Result;
 using ILogger = Serilog.ILogger;
 

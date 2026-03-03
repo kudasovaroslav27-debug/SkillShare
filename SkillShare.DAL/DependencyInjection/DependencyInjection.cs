@@ -1,7 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Org.BouncyCastle.Crypto;
 using SkillShare.DAL.Interceptors;
 using SkillShare.DAL.Repositories;
 using SkillShare.Domain.Entities;
