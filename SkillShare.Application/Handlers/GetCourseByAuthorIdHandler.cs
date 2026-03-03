@@ -14,6 +14,7 @@ public class GetCourseByAuthorIdHandler(IBaseRepository<Course> courseRepository
     public async Task<IEnumerable<CourseDto>> Handle(GetCourseByAuthorIdQuery request, CancellationToken ct)
     {
         return await courseRepository.GetAll()
+            .AsNoTracking()
             .Where(x => x.AuthorId == request.AuthorId)
             .ProjectToType<CourseDto>()
             .ToArrayAsync(ct);

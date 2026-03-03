@@ -34,4 +34,9 @@ public interface ILessonService
     /// Обновление данных урока
     /// </summary>
     Task<DataResult<LessonDto>> UpdateAsync(UpdateLessonDto dto, CancellationToken ct = default);
+
+    /// <summary>
+    /// Обрабатывает прохождение урока студентом, проверяет ответы и выставляет баллы.
+    /// </summary>
+    Task<DataResult<float>> PassLessonAsync(PassLessonDto dto, CancellationToken ct = default);
 }

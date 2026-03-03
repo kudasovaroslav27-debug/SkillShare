@@ -18,4 +18,16 @@ public interface IUnitOfWork : IStateSaveChanges
     IBaseRepository<Role> Roles { get; set; }
 
     IBaseRepository<UserRole> UserRoles { get; set; }
+
+    IBaseRepository<Course> Courses { get; set; }
+
+    IBaseRepository<Lesson> Lessons { get; set; }
+
+    IBaseRepository<Question> Questions { get; set; }
+
+    IBaseRepository<StudentAnswer> StudentAnswers { get; set; }
+
+    IBaseRepository<UserCourseGrade> UserCourseGrades { get; set; }
+
+    IBaseRepository<UserToken> UserTokens { get; set; }
 }

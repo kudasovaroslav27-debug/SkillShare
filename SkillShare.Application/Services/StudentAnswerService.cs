@@ -15,6 +15,7 @@ using SkillShare.Domain.Dto.Role;
 using SkillShare.Domain.Dto.StudentAnswer;
 using SkillShare.Domain.Entities;
 using SkillShare.Domain.Enum;
+using SkillShare.Domain.Interfaces.Databases;
 using SkillShare.Domain.Interfaces.Repositories;
 using SkillShare.Domain.Interfaces.Services;
 using SkillShare.Domain.Result;
@@ -23,35 +24,27 @@ namespace SkillShare.Application.Services;
 
 public class StudentAnswerService : IStudentAnswerService
 {
-    private readonly IBaseRepository<StudentAnswer> _answerRepository;
-    private readonly IBaseRepository<User> _userRepository;   
-    private readonly IBaseRepository<Lesson> _lessonRepository; 
-    private readonly IBaseRepository<Course> _courseRepository; 
+    private readonly IUnitOfWork _unitOfWork;
     private readonly IMapper _mapper;
 
     public StudentAnswerService(
-        IBaseRepository<StudentAnswer> answerRepository,
-        IBaseRepository<User> userRepository,
-        IBaseRepository<Lesson> lessonRepository,
-        IBaseRepository<Course> courseRepository,
-        IMapper mapper)
+        IMapper mapper,
+        IUnitOfWork unitOfWork)
     {
-        _answerRepository = answerRepository;
-        _userRepository = userRepository;
-        _lessonRepository = lessonRepository;
-        _courseRepository = courseRepository;
         _mapper = mapper;
+        _unitOfWork = unitOfWork;
     }
 
     public async Task<CollectionResult<StudentAnswerDto>> GetByUserIdAsync(long userId, CancellationToken ct = default)
     {
-        var userExists = await _userRepository.ExistsAsync(x => x.Id == userId, ct);
+        var userExists = await _unitOfWork.Users.ExistsAsync(x => x.Id == userId, ct);
         if (!userExists)
         {
             return CollectionResult<StudentAnswerDto>.Failure((int)ErrorCodes.UserNotFound, ErrorMessage.UserNotFound);
         }
 
-        var answers = await _answerRepository.GetAll()
+        var answers = await _unitOfWork.StudentAnswers.GetAll()
+            .AsNoTracking()
             .Where(x => x.StudentId == userId)
             .ProjectToType<StudentAnswerDto>()
             .ToListAsync(ct);
@@ -66,13 +59,14 @@ public class StudentAnswerService : IStudentAnswerService
 
     public async Task<CollectionResult<StudentAnswerDto>> GetByLessonIdAsync(int lessonId, CancellationToken ct = default)
     {
-        var lessonExists = await _lessonRepository.ExistsAsync(x => x.Id == lessonId, ct);
+        var lessonExists = await _unitOfWork.Lessons.ExistsAsync(x => x.Id == lessonId, ct);
         if (!lessonExists)
         {
             return CollectionResult<StudentAnswerDto>.Failure((int)ErrorCodes.LessonNotFound, ErrorMessage.LessonNotFound);
         }
 
-        var answers = await _answerRepository.GetAll()
+        var answers = await _unitOfWork.StudentAnswers.GetAll()
+            .AsNoTracking()
             .Where(x => x.Question.LessonId == lessonId)
             .ProjectToType<StudentAnswerDto>()
             .ToListAsync(ct);
@@ -86,13 +80,14 @@ public class StudentAnswerService : IStudentAnswerService
 
     public async Task<CollectionResult<StudentAnswerDto>> GetByCourseIdAsync(int courseId, CancellationToken ct = default)
     {
-        var courseExists = await _courseRepository.ExistsAsync(x => x.Id == courseId, ct);
+        var courseExists = await _unitOfWork.Courses.ExistsAsync(x => x.Id == courseId, ct);
         if (!courseExists)
         {
             return CollectionResult<StudentAnswerDto>.Failure((int)ErrorCodes.CourseNotFound, ErrorMessage.CourseNotFound);
         }
 
-        var answers = await _answerRepository.GetAll()
+        var answers = await _unitOfWork.StudentAnswers.GetAll()
+            .AsNoTracking()
             .Where(x => x.Question.Lesson.CourseId == courseId)
             .ProjectToType<StudentAnswerDto>()
             .ToListAsync(ct);
@@ -107,7 +102,7 @@ public class StudentAnswerService : IStudentAnswerService
 
     public async Task<DataResult<StudentAnswerDto>> DeleteAsync(long id, CancellationToken ct = default)
     {
-        var answer = await _answerRepository.GetAll()
+        var answer = await _unitOfWork.StudentAnswers.GetAll()
             .FirstOrDefaultAsync(x => x.Id == id, ct);
 
         if (answer == null)
@@ -115,8 +110,8 @@ public class StudentAnswerService : IStudentAnswerService
             return DataResult<StudentAnswerDto>.Failure((int)ErrorCodes.AnswerNotFound, ErrorMessage.AnswerNotFound);
         }
 
-        _answerRepository.Remove(answer);
-        await _answerRepository.SaveChangesAsync();
+        _unitOfWork.StudentAnswers.Remove(answer);
+        await _unitOfWork.StudentAnswers.SaveChangesAsync();
 
         return DataResult<StudentAnswerDto>.Success(_mapper.Map<StudentAnswerDto>(answer));
     }

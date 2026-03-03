@@ -16,19 +16,13 @@ namespace SkillShare.Application.Services;
 public class RoleService : IRoleService
 {
     private readonly IUnitOfWork _unitOfWork;
-    private readonly IBaseRepository<User> _userRepository;
-    private readonly IBaseRepository<Role> _roleRepository;
-    private readonly IBaseRepository<UserRole> _userRoleRepository;
     private readonly IValidator<CreateRoleDto> _createValidator;
     private readonly IValidator<UpdateRoleDto> _updateValidator;
     private readonly IMapper _mapper;
 
-    public RoleService(IBaseRepository<User> userRepository, IBaseRepository<Role> roleRepository, IValidator<CreateRoleDto> createValidator,
-        IValidator<UpdateRoleDto> updateValidator, IMapper mapper, IBaseRepository<UserRole> userRoleRepository, IUnitOfWork unitOfWork)
+    public RoleService(IValidator<CreateRoleDto> createValidator,
+        IValidator<UpdateRoleDto> updateValidator, IMapper mapper, IUnitOfWork unitOfWork)
     {
-        _userRoleRepository = userRoleRepository;
-        _userRepository = userRepository;
-        _roleRepository = roleRepository;
         _createValidator = createValidator;
         _updateValidator = updateValidator;
         _mapper = mapper;
@@ -44,7 +38,7 @@ public class RoleService : IRoleService
             return DataResult<RoleDto>.Failure((int)ErrorCodes.ValidError, ErrorMessage.ValidError);
         }
 
-        var existingRole = await _roleRepository.GetAll()
+        var existingRole = await _unitOfWork.Roles.GetAll()
             .FirstOrDefaultAsync(x => x.Name == dto.Name, ct);
 
         if (existingRole != null)
@@ -57,7 +51,7 @@ public class RoleService : IRoleService
             Name = dto.Name
         };
 
-        await _roleRepository.CreateAsync(role);
+        await _unitOfWork.Roles.CreateAsync(role);
 
         return DataResult<RoleDto>.Success(_mapper.Map<RoleDto>(role));
     }
@@ -70,7 +64,7 @@ public class RoleService : IRoleService
             return DataResult<RoleDto>.Failure((int)ErrorCodes.ValidError, ErrorMessage.ValidError);
         }
 
-        var role = await _roleRepository.GetAll()
+        var role = await _unitOfWork.Roles.GetAll()
             .FirstOrDefaultAsync(x => x.Id == dto.Id, ct);
         if (role == null)
         {
@@ -79,8 +73,8 @@ public class RoleService : IRoleService
 
         role.Name = dto.Name;
 
-        var updatedRole = _roleRepository.Update(role);
-        await _roleRepository.SaveChangesAsync();
+        var updatedRole = _unitOfWork.Roles.Update(role);
+        await _unitOfWork.Roles.SaveChangesAsync();
 
         return DataResult<RoleDto>.Success(_mapper.Map<RoleDto>(updatedRole));
     }
@@ -88,22 +82,22 @@ public class RoleService : IRoleService
 
     public async Task<DataResult<RoleDto>> DeleteRoleAsync(int id, CancellationToken ct = default)
     {
-        var role = await _roleRepository.GetAll()
+        var role = await _unitOfWork.Roles.GetAll()
              .FirstOrDefaultAsync(x => x.Id == id, ct);
         if (role == null)
         {
             return DataResult<RoleDto>.Failure((int)ErrorCodes.RoleNotFound, ErrorMessage.RoleNotFound);
         }
 
-        _roleRepository.Remove(role);
-        await _roleRepository.SaveChangesAsync();
+        _unitOfWork.Roles.Remove(role);
+        await _unitOfWork.Roles.SaveChangesAsync();
 
         return DataResult<RoleDto>.Success(_mapper.Map<RoleDto>(role));
     }
 
     public async Task<DataResult<UserRoleDto>> AddRoleForUserAsync(UserRoleDto dto, CancellationToken ct = default)
     {
-        var user = await _userRepository.GetAll()
+        var user = await _unitOfWork.Users.GetAll()
             .Include(x => x.Roles)
             .FirstOrDefaultAsync(x => x.Login == dto.Login, ct);
         if (user == null)
@@ -111,7 +105,7 @@ public class RoleService : IRoleService
             return DataResult<UserRoleDto>.Failure((int)ErrorCodes.UserNotFound, ErrorMessage.UserNotFound);
         }
 
-        var role = await _roleRepository.GetAll().FirstOrDefaultAsync(x => x.Name == dto.RoleName, ct);
+        var role = await _unitOfWork.Roles.GetAll().FirstOrDefaultAsync(x => x.Name == dto.RoleName, ct);
         if (role == null)
         {
             return DataResult<UserRoleDto>.Failure((int)ErrorCodes.RoleNotFound, ErrorMessage.RoleNotFound);
@@ -123,9 +117,9 @@ public class RoleService : IRoleService
             UserId = user.Id
         };
 
-        await _userRoleRepository.CreateAsync(userRole);
+        await _unitOfWork.UserRoles.CreateAsync(userRole);
 
-        await _userRoleRepository.SaveChangesAsync();
+        await _unitOfWork.UserRoles.SaveChangesAsync();
 
         return DataResult<UserRoleDto>.Success(_mapper.Map<UserRoleDto>(userRole));
 
@@ -133,7 +127,7 @@ public class RoleService : IRoleService
 
     public async Task<DataResult<UserRoleDto>> DeleteRoleForUserAsync(RemoveUserRoleDto dto, CancellationToken ct = default)
     {
-        var user = await _userRepository.GetAll()
+        var user = await _unitOfWork.Users.GetAll()
            .Include(x => x.Roles)
            .FirstOrDefaultAsync(x => x.Login == dto.Login, ct);
         if (user == null)
@@ -147,18 +141,18 @@ public class RoleService : IRoleService
             return DataResult<UserRoleDto>.Failure((int)ErrorCodes.RoleNotFound, ErrorMessage.RoleNotFound);
         }
 
-        var userRole = await _userRoleRepository.GetAll()
+        var userRole = await _unitOfWork.UserRoles.GetAll()
             .Where(x => x.RoleId == role.Id)
             .FirstOrDefaultAsync(x => x.UserId == user.Id, ct);
-        _userRoleRepository.Remove(userRole);
-        await _userRoleRepository.SaveChangesAsync();
+        _unitOfWork.UserRoles.Remove(userRole);
+        await _unitOfWork.UserRoles.SaveChangesAsync();
 
         return DataResult<UserRoleDto>.Success(_mapper.Map<UserRoleDto>(userRole));
     }
 
     public async Task<DataResult<UserRoleDto>> UpdateRoleForUserAsync(UpdateUserRoleDto dto, CancellationToken ct = default)
     {
-        var user = await _userRepository.GetAll()
+        var user = await _unitOfWork.Users.GetAll()
            .Include(x => x.Roles)
            .FirstOrDefaultAsync(x => x.Login == dto.Login, ct);
         if (user == null)
@@ -172,7 +166,7 @@ public class RoleService : IRoleService
             return DataResult<UserRoleDto>.Failure((int)ErrorCodes.RoleNotFound, ErrorMessage.RoleNotFound);
         }
 
-        var newRoleForUser = await _roleRepository.GetAll().FirstOrDefaultAsync(x => x.Id == dto.ToRoleId);
+        var newRoleForUser = await _unitOfWork.Roles.GetAll().FirstOrDefaultAsync(x => x.Id == dto.ToRoleId);
         if (newRoleForUser == null)
         {
             return DataResult<UserRoleDto>.Failure((int)ErrorCodes.RoleNotFound, ErrorMessage.RoleNotFound);

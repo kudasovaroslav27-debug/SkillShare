@@ -18,37 +18,25 @@ namespace SkillShare.Application.Services;
 public class AuthService : IAuthService
 {
     private readonly IUnitOfWork _unitOfWork;
-    private readonly IBaseRepository<User> _userRepository;
-    private readonly IBaseRepository<Role> _roleRepository;
-    private readonly IBaseRepository<UserToken> _userTokenRepository;
-    private readonly IBaseRepository<UserRole> _userRoleRepository;
     private readonly ILogger _logger;
     private readonly IMapper _mapper;
     private readonly ITokenService _tokenService;
 
     public AuthService(
         ITokenService tokenService,
-        IBaseRepository<User> userRepozitory,
         ILogger logger,
         IMapper mapper,
-        IBaseRepository<UserToken> userTokenRepository,
-        IBaseRepository<Role> roleRepository,
-        IBaseRepository<UserRole> userRoleRepository,
         IUnitOfWork unitOfWork)
     {
-        _userRepository = userRepozitory;
         _tokenService = tokenService;
         _logger = logger;
         _mapper = mapper;
-        _userTokenRepository = userTokenRepository;
-        _roleRepository = roleRepository;
-        _userRoleRepository = userRoleRepository;
         _unitOfWork = unitOfWork;
     }
 
     public async Task<DataResult<TokenDto>> Login(LoginUserDto dto, CancellationToken ct = default)
     {
-        var user = await _userRepository.GetAll()
+        var user = await _unitOfWork.Users.GetAll()
             .Include(x => x.UserToken)
             .Include(x => x.Roles)
             .FirstOrDefaultAsync(x => x.Login == dto.Login, ct);
@@ -81,16 +69,16 @@ public class AuthService : IAuthService
                 RefreshTokenExpireTime = DateTime.UtcNow.AddDays(7),
 
             };
-            await _userTokenRepository.CreateAsync(userToken);
-            await _userTokenRepository.SaveChangesAsync();
+            await _unitOfWork.UserTokens.CreateAsync(userToken);
+            await _unitOfWork.UserTokens.SaveChangesAsync();
         }
         else
         {
             user.UserToken.RefreshToken = refreshToken;
             user.UserToken.RefreshTokenExpireTime = DateTime.UtcNow.AddDays(7);
 
-           _userTokenRepository.Update(user.UserToken);
-           await _userTokenRepository.SaveChangesAsync();
+           _unitOfWork.UserTokens.Update(user.UserToken);
+           await _unitOfWork.UserTokens.SaveChangesAsync();
         }
 
         var data = new TokenDto()
@@ -105,7 +93,7 @@ public class AuthService : IAuthService
 
     public async Task<DataResult<UserDto>> Register(RegisterUserDto dto, CancellationToken ct = default)
     {
-        var user = await _userRepository.GetAll().FirstOrDefaultAsync(x => x.Login == dto.Login, ct);
+        var user = await _unitOfWork.Users.GetAll().FirstOrDefaultAsync(x => x.Login == dto.Login, ct);
         if (user != null)
         {
             return DataResult<UserDto>.Failure((int)ErrorCodes.UserAlreadyExists, ErrorMessage.UserAlreadyExists);
@@ -130,7 +118,7 @@ public class AuthService : IAuthService
 
                 await _unitOfWork.SaveChangesAsync();
 
-                var role = await _roleRepository.GetAll()
+                var role = await _unitOfWork.Roles.GetAll()
                     .FirstOrDefaultAsync(x => x.Name == nameof(Roles.Student), ct);
 
                 if (role == null)

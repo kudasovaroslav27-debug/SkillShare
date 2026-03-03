@@ -8,10 +8,9 @@ using SkillShare.Application.Commands;
 using SkillShare.Application.Queries;
 using SkillShare.Application.Resources;
 using SkillShare.Domain.Dto.CourseDto;
-using SkillShare.Domain.Entities;
 using SkillShare.Domain.Enum;
 using SkillShare.Domain.Extensions;
-using SkillShare.Domain.Interfaces.Repositories;
+using SkillShare.Domain.Interfaces.Databases;
 using SkillShare.Domain.Interfaces.Services;
 using SkillShare.Domain.Interfaces.Validations;
 using SkillShare.Domain.Result;
@@ -24,39 +23,37 @@ public class CourseService : ICourseService
 {
     private readonly IMessageProducer _messageProducer;
     private readonly IOptions<RabbitMqSettings> _rabbitMqOptions;
-    private readonly IBaseRepository<User> _userRepository;
-    private readonly IBaseRepository<Course> _courseRepository;
+    private readonly IUnitOfWork _unitOfWork;
     private readonly ICourseValidator _courseValidator;
     private readonly IDistributedCache _distributedCache;
     private readonly ILogger _logger;
     private readonly IMapper _mapper;
     private readonly IMediator _mediator;
 
-    public CourseService(IBaseRepository<Course> courseRepository,
+    public CourseService(
                          ILogger logger,
                          IMapper mapper,
                          ICourseValidator courseValidator,
-                         IBaseRepository<User> userRepository,
                          IMessageProducer messageProducer,
                          IOptions<RabbitMqSettings> rabbitMqOptions,
                          IDistributedCache distributedCache,
-                         IMediator mediator)
+                         IMediator mediator,
+                         IUnitOfWork unitOfWork)
     {
         _courseValidator = courseValidator;
-        _courseRepository = courseRepository;
         _logger = logger;
         _mapper = mapper;
-        _userRepository = userRepository;
         _messageProducer = messageProducer;
         _rabbitMqOptions = rabbitMqOptions;
         _distributedCache = distributedCache;
         _mediator = mediator;
+        _unitOfWork = unitOfWork;
     }
 
     public async Task<DataResult<CourseDto>> CreateAsync(long userId, CreateCourseDto dto, CancellationToken ct = default)
     {
-        var user = await _userRepository.GetAll().Where(x => x.Id == userId).FirstOrDefaultAsync(ct);
-        var course = await _courseRepository.GetAll().Where(x => x.Title == dto.Title).FirstOrDefaultAsync(ct);
+        var user = await _unitOfWork.Users.GetAll().AsNoTracking().Where(x => x.Id == userId).FirstOrDefaultAsync(ct);
+        var course = await _unitOfWork.Courses.GetAll().AsNoTracking().Where(x => x.Title == dto.Title).FirstOrDefaultAsync(ct);
         var result = _courseValidator.ValidatorCreate(course, user);
         if (!result.IsSuccess)
         {
@@ -77,7 +74,7 @@ public class CourseService : ICourseService
 
     public async Task<DataResult<CourseDto>> DeleteAsync(int id, CancellationToken ct = default)
     {
-        var course = await _courseRepository.GetAll()
+        var course = await _unitOfWork.Courses.GetAll()
             .Where(x => x.Id == id)
             .FirstOrDefaultAsync(ct);
 
@@ -86,8 +83,8 @@ public class CourseService : ICourseService
         {
             return DataResult<CourseDto>.Failure((int)ErrorCodes.CourseNotFound, ErrorMessage.CourseNotFound);
         }
-        _courseRepository.Remove(course);
-        await _courseRepository.SaveChangesAsync();
+        _unitOfWork.Courses.Remove(course);
+        await _unitOfWork.Courses.SaveChangesAsync();
 
         return DataResult<CourseDto>.Success(_mapper.Map<CourseDto>(course));
     }
@@ -121,7 +118,7 @@ public class CourseService : ICourseService
 
     public async Task<DataResult<CourseDto>> UpdateAsync(UpdateCourseDto dto, CancellationToken ct = default)
     {
-        var course = await _courseRepository.GetAll()
+        var course = await _unitOfWork.Courses.GetAll()
              .Where(x => x.Id == dto.Id)
              .FirstOrDefaultAsync(ct);
 

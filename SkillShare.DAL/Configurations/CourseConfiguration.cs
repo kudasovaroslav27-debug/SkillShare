@@ -16,11 +16,6 @@ public class CourseConfiguration : IEntityTypeConfiguration<Course>
         builder.Property(c => c.Description).IsRequired();
         builder.Property(c => c.Price).HasDefaultValue(0.00m).IsRequired();
 
-        builder.HasOne(c => c.Parent)
-               .WithMany(c => c.Children)
-               .HasForeignKey(c => c.ParentId)
-               .OnDelete(DeleteBehavior.SetNull);
-
         builder.HasOne(c => c.Author)
                .WithMany(u => u.Courses)
                .HasForeignKey(c => c.AuthorId)

@@ -19,7 +19,8 @@ public class LessonController : ControllerBase
     /// <summary>
     /// Получить урок по Id
     /// </summary>
-    [HttpGet("courses/{courseId}")]
+
+    [HttpGet("{id}")]
     public async Task<ActionResult<DataResult<LessonDto>>> GetById(int id)
     {
         var response = await _lessonService.GetByIdAsync(id);
@@ -33,7 +34,7 @@ public class LessonController : ControllerBase
     /// <summary>
     /// Получить все уроки конкретного курса
     /// </summary>
-    [HttpGet("{id}")]
+    [HttpGet("courses/{courseId}")]
     public async Task<ActionResult<CollectionResult<LessonDto>>> GetByCourseId(int courseId)
     {
         var response = await _lessonService.GetByCourseIdAsync(courseId);
@@ -51,6 +52,18 @@ public class LessonController : ControllerBase
     public async Task<ActionResult<DataResult<LessonDto>>> Create(CreateLessonDto dto)
     {
         var response = await _lessonService.CreateAsync(dto);
+        if (response.IsSuccess)
+        {
+            return Ok(response);
+        }
+        return BadRequest(response);
+    }
+
+    [HttpPost("pass")]
+    public async Task<ActionResult<DataResult<float>>> PassLesson(PassLessonDto dto)
+    {
+        var response = await _lessonService.PassLessonAsync(dto);
+
         if (response.IsSuccess)
         {
             return Ok(response);

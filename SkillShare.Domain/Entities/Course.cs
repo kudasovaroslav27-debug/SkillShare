@@ -22,8 +22,6 @@ public class Course : IEntityId<int>, IAuditable
 
     public Course? Parent { get; set; }
 
-    public ICollection<Course> Children { get; set; } 
-
     public User Author { get; set; }
 
     public List<Lesson> Lessons { get; set; }

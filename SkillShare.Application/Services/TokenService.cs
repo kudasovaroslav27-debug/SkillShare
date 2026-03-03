@@ -10,6 +10,7 @@ using SkillShare.Application.Resources;
 using SkillShare.Domain.Dto.Token;
 using SkillShare.Domain.Entities;
 using SkillShare.Domain.Enum;
+using SkillShare.Domain.Interfaces.Databases;
 using SkillShare.Domain.Interfaces.Repositories;
 using SkillShare.Domain.Interfaces.Services;
 using SkillShare.Domain.Result;
@@ -19,21 +20,19 @@ namespace SkillShare.Application.Services;
 
 public class TokenService : ITokenService
 {
-    private readonly IBaseRepository<UserToken> _userTokenRepository;
+    private readonly IUnitOfWork _unitOfWork;
     private readonly TimeProvider _timeProvider;
-    private readonly IBaseRepository<User> _userRepository;
     private readonly string _jwtKey;
     private readonly string _issuer;
     private readonly string _audience;
 
-    public TokenService(IOptions<JwtSettings> options, IBaseRepository<User> userRepository, TimeProvider timeProvider, IBaseRepository<UserToken> userTokenRepository)
+    public TokenService(IOptions<JwtSettings> options, TimeProvider timeProvider, IUnitOfWork unitOfWork)
     {
         _timeProvider = timeProvider;
-        _userRepository = userRepository;
         _jwtKey = options.Value.JwtKey;
         _issuer = options.Value.Issuer;
         _audience = options.Value.Audience;
-        _userTokenRepository = userTokenRepository;
+        _unitOfWork = unitOfWork;
     }
 
     public string GenerateAccessToken(IEnumerable<Claim> claims)
@@ -81,7 +80,7 @@ public class TokenService : ITokenService
 
     public async Task<DataResult<TokenDto>> RefreshToken(TokenDto dto, CancellationToken ct)
     {
-        var user = await _userRepository.GetAll()
+        var user = await _unitOfWork.Users.GetAll()
             .Include(x => x.UserToken)
             .Include(x => x.Roles)
             .FirstOrDefaultAsync(x => x.UserToken.RefreshToken == dto.RefreshToken, ct);
@@ -120,8 +119,8 @@ public class TokenService : ITokenService
         user.UserToken.RefreshToken = newRefreshToken;
         user.UserToken.RefreshTokenExpireTime = _timeProvider.GetUtcNow().UtcDateTime.AddDays(7);
 
-        _userTokenRepository.Update(user.UserToken);
-        await _userTokenRepository.SaveChangesAsync();
+        _unitOfWork.UserTokens.Update(user.UserToken);
+        await _unitOfWork.UserTokens.SaveChangesAsync();
 
         var tokenDto = new TokenDto
         {
@@ -148,7 +147,7 @@ public class TokenService : ITokenService
             return DataResult<User>.Failure((int)ErrorCodes.TokenMismatch, ErrorMessage.TokenMismatch);
         }
 
-        var user = await _userRepository.GetAll()
+        var user = await _unitOfWork.Users.GetAll()
             .Include(x => x.UserToken)
             .Include(x => x.Roles)
             .FirstOrDefaultAsync(x => x.Login == login, ct);

@@ -2,15 +2,12 @@
 using Mapster;
 using MapsterMapper;
 using Microsoft.EntityFrameworkCore;
-using MySqlX.XDevAPI;
 using SkillShare.Application.Resources;
 using SkillShare.Domain.Dto;
-using SkillShare.Domain.Dto.CourseDto;
-using SkillShare.Domain.Dto.Lesson;
 using SkillShare.Domain.Dto.Question;
 using SkillShare.Domain.Entities;
 using SkillShare.Domain.Enum;
-using SkillShare.Domain.Interfaces.Repositories;
+using SkillShare.Domain.Interfaces.Databases;
 using SkillShare.Domain.Interfaces.Services;
 using SkillShare.Domain.Result;
 
@@ -18,23 +15,20 @@ namespace SkillShare.Application.Services;
 
 public class QuestionService : IQuestionService
 {
-    private readonly IBaseRepository<Question> _questionRepository;
-    private readonly IBaseRepository<Lesson> _lessonRepository;
+    private readonly IUnitOfWork _unitOfWork;
     private readonly IMapper _mapper;
 
     public QuestionService(
-        IBaseRepository<Question> questionRepository,
-        IBaseRepository<Lesson> lessonRepository,
-        IMapper mapper)
+        IMapper mapper, IUnitOfWork unitOfWork)
     {
-        _questionRepository = questionRepository;
-        _lessonRepository = lessonRepository;
         _mapper = mapper;
+        _unitOfWork = unitOfWork;
     }
 
     public async Task<DataResult<QuestionDto>> GetByIdAsync(int id, CancellationToken ct = default)
     {
-        var question = await _questionRepository.GetAll()
+        var question = await _unitOfWork.Questions.GetAll()
+            .AsNoTracking()
             .Where(x => x.Id == id)
             .ProjectToType<QuestionDto>()
             .FirstOrDefaultAsync(ct);
@@ -49,13 +43,14 @@ public class QuestionService : IQuestionService
 
     public async Task<CollectionResult<QuestionDto>> GetByLessonIdAsync(int lessonId, CancellationToken ct = default)
     {
-        var lessonExists = await _lessonRepository.ExistsAsync(x => x.Id == lessonId, ct);
+        var lessonExists = await _unitOfWork.Lessons.ExistsAsync(x => x.Id == lessonId, ct);
         if (!lessonExists)
         {
             return CollectionResult<QuestionDto>.Failure((int)ErrorCodes.LessonNotFound, ErrorMessage.LessonNotFound);
         }
 
-        var questions = await _questionRepository.GetAll()
+        var questions = await _unitOfWork.Questions.GetAll()
+            .AsNoTracking()
             .Where(x => x.LessonId == lessonId)
             .ProjectToType<QuestionDto>()
             .ToListAsync(ct);
@@ -70,7 +65,7 @@ public class QuestionService : IQuestionService
 
     public async Task<DataResult<QuestionDto>> CreateAsync(CreateQuestionDto dto, CancellationToken ct = default)
     {
-        var lessonExists = await _lessonRepository.ExistsAsync(x => x.Id == dto.LessonId, ct);
+        var lessonExists = await _unitOfWork.Lessons.ExistsAsync(x => x.Id == dto.LessonId, ct);
         if (!lessonExists)
         {
             return DataResult<QuestionDto>.Failure((int)ErrorCodes.LessonNotFound, ErrorMessage.LessonNotFound);
@@ -83,15 +78,15 @@ public class QuestionService : IQuestionService
             CorrectAnswer = dto.CorrectAnswer
         };
 
-        await _questionRepository.CreateAsync(newQuestion);
-        await _questionRepository.SaveChangesAsync();
+        await _unitOfWork.Questions.CreateAsync(newQuestion);
+        await _unitOfWork.Questions.SaveChangesAsync();
 
         return DataResult<QuestionDto>.Success(_mapper.Map<QuestionDto>(newQuestion));
     }
 
     public async Task<DataResult<QuestionDto>> DeleteAsync(int id, CancellationToken ct = default)
     {
-        var question = await _questionRepository.GetAll()
+        var question = await _unitOfWork.Questions.GetAll()
             .FirstOrDefaultAsync(x => x.Id == id, ct);
 
         if (question == null)
@@ -99,8 +94,8 @@ public class QuestionService : IQuestionService
             return DataResult<QuestionDto>.Failure((int)ErrorCodes.QuestionNotFound, ErrorMessage.QuestionNotFound);
         }
 
-        _questionRepository.Remove(question);
-        await _questionRepository.SaveChangesAsync();
+        _unitOfWork.Questions.Remove(question);
+        await _unitOfWork.Questions.SaveChangesAsync();
 
         return DataResult<QuestionDto>.Success(_mapper.Map<QuestionDto>(question));
     }
