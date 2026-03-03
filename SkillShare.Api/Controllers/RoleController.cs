@@ -1,4 +1,5 @@
 ﻿using System.Net.Mime;
+using System.Runtime.InteropServices;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SkillShare.Domain.Dto.Role;
@@ -12,6 +13,7 @@ namespace SkillShare.Api.Controllers;
 
 [ApiController]
 [Authorize(Roles ="Admin")]
+[Route("api/v{version:apiVersion}/Roles")]
 public class RoleController : ControllerBase
 {
     private readonly IRoleService _roleService;
@@ -29,7 +31,7 @@ public class RoleController : ControllerBase
     /// <remarks>
     /// Some info
     /// </remarks>
-    [HttpPost("CreateRole")]
+    [HttpPost("api/v1/Roles")]
     public async Task<ActionResult<DataResult<Role>>> Create(CreateRoleDto dto)
     {
         var response = await _roleService.CreateRoleAsync(dto);
@@ -45,7 +47,7 @@ public class RoleController : ControllerBase
     /// </summary>
     /// <param name="dto"></param>
     /// <returns></returns>
-    [HttpPost("AddRole")]
+    [HttpPost("assign")]
     public async Task<ActionResult<DataResult<Role>>> AddRoleForUser(UserRoleDto dto)
     {
         var response = await _roleService.AddRoleForUserAsync(dto);
@@ -83,7 +85,7 @@ public class RoleController : ControllerBase
     /// <remarks>
     /// Some info
     /// </remarks>
-    [HttpDelete("DeleteRoleById")]
+    [HttpDelete]
     public async Task<ActionResult<DataResult<Role>>> Delete(int id)
     {
         var response = await _roleService.DeleteRoleAsync(id);
@@ -99,7 +101,7 @@ public class RoleController : ControllerBase
     /// </summary>
     /// <param name="dto"></param>
     /// <returns></returns>
-    [HttpDelete("DeleteRoleForUser")]
+    [HttpDelete("remove/{userId}/{roleId}")]
     public async Task<ActionResult<DataResult<Role>>> DeleteRoleForUser(RemoveUserRoleDto dto)
     {
         var response = await _roleService.DeleteRoleForUserAsync(dto);
@@ -115,7 +117,7 @@ public class RoleController : ControllerBase
     /// </summary>
     /// <param name="dto"></param>
     /// <returns></returns>
-    [HttpPut("UpdateRoleForUser")]
+    [HttpPut("UpdateUserRole")]
     public async Task<ActionResult<DataResult<Role>>> UpdateRoleForUser(UpdateUserRoleDto dto)
     {
         var response = await _roleService.UpdateRoleForUserAsync(dto);

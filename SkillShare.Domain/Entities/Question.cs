@@ -18,6 +18,8 @@ public class Question : IEntityId<long>, IAuditable
 
     public string Description { get; set; }
 
+    public string CorrectAnswer { get; set; }
+
     public DateTime CreatedAt { get; set; }
 
     public DateTime UpdateAt { get; set; }
@@ -26,6 +28,6 @@ public class Question : IEntityId<long>, IAuditable
 
     public Lesson Lesson { get; set; }
 
-    public List<Answer> Answers { get; set; }
+    public List<StudentAnswer> StudentAnswers { get; set; }
 
 }

@@ -13,6 +13,7 @@ using SkillShare.Domain.Result;
 namespace SkillShare.Api.Controllers;
 
 [ApiController]
+[Route("api/v{version:apiVersion}/questions")]
 public class QuestionController : ControllerBase
 {
     private readonly IQuestionService _questionService;
@@ -25,7 +26,7 @@ public class QuestionController : ControllerBase
     /// <summary>
     /// Создание вопроса
     /// </summary>
-    [HttpPost("CreateQuestion")]
+    [HttpPost]
     public async Task<ActionResult<DataResult<QuestionDto>>> Create(CreateQuestionDto dto)
     {
         var response = await _questionService.CreateAsync(dto);
@@ -39,7 +40,7 @@ public class QuestionController : ControllerBase
     /// <summary>
     /// Удаление вопроса
     /// </summary>
-    [HttpDelete("DeleteQuestion")]
+    [HttpDelete]
     public async Task<ActionResult<DataResult<QuestionDto>>> Delete(int id)
     {
         var response = await _questionService.DeleteAsync(id);
@@ -53,7 +54,7 @@ public class QuestionController : ControllerBase
     /// <summary>
     /// Получение вопроса по Id
     /// </summary>
-    [HttpGet("Id")]
+    [HttpGet("api/v1/Questions")]
     public async Task<ActionResult<QuestionDto>> GetQuestionById(int id)
     {
         var response = await _questionService.GetByIdAsync(id);
@@ -67,7 +68,7 @@ public class QuestionController : ControllerBase
     /// <summary>
     /// Получение вопроса по LessonId
     /// </summary>
-    [HttpGet("lessonId")]
+    [HttpGet("by-lesson/{lessonId}")]
     public async Task<ActionResult<QuestionDto>> GetQuestionByLesson(int lessonId)
     {
         var response = await _questionService.GetByLessonIdAsync(lessonId);

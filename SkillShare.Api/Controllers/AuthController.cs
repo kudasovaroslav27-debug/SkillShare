@@ -9,6 +9,7 @@ using SkillShare.Domain.Result;
 namespace SkillShare.Api.Controllers;
 
 [ApiController]
+[Route("api/v{version:apiVersion}/Auth")]
 public class AuthController : Controller
 {
     private readonly IAuthService _authService;

@@ -11,7 +11,7 @@ namespace SkillShare.Api.Controllers;
 [Authorize]
 [ApiController]
 [ApiVersion("1.0")]
-[Route("api/v{version:apiVersion}/[controller]")]
+[Route("api/v{version:apiVersion}/courses")]
 public class CourseController : ControllerBase
 {
     private readonly ICourseService _courseService;
@@ -44,7 +44,7 @@ public class CourseController : ControllerBase
         return BadRequest(response);
     }
 
-    [HttpDelete("DeleteCourseById")]
+    [HttpDelete]
     public async Task<ActionResult<DataResult<CourseDto>>> DeleteCourseById(int id)
     {
         var response = await _courseService.DeleteAsync(id);
@@ -63,7 +63,7 @@ public class CourseController : ControllerBase
     /// <remarks>
     /// Some info
     /// </remarks>
-    [HttpPost("CreateCourse")]
+    [HttpPost]
     public async Task<ActionResult<DataResult<CourseDto>>> CreateCourse(long userId, CreateCourseDto dto)
     {
         var response = await _courseService.CreateAsync(userId, dto);
@@ -74,7 +74,7 @@ public class CourseController : ControllerBase
         return BadRequest(response);
     }
 
-    [HttpPut("UpdateCourse")]
+    [HttpPut]
     public async Task<ActionResult<DataResult<CourseDto>>> UpdateCourse(UpdateCourseDto dto)
     {
         var response = await _courseService.UpdateAsync(dto);

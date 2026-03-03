@@ -6,4 +6,4 @@ using System.Threading.Tasks;
 
 namespace SkillShare.Domain.Dto.Question;
 
-public record CreateQuestionDto(int LessonId, string Description);
+public record CreateQuestionDto(int LessonId, string Description, string CorrectAnswer);

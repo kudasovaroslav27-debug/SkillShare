@@ -6,6 +6,7 @@ using SkillShare.Domain.Result;
 namespace SkillShare.Api.Controllers;
 
 [ApiController]
+[Route("api/v{version:apiVersion}/StudentAnswers")]
 public class StudentAnswerController : ControllerBase
 {
     private readonly IStudentAnswerService _studentAnswerService;
@@ -16,37 +17,9 @@ public class StudentAnswerController : ControllerBase
     }
 
     /// <summary>
-    /// Создает новый ответ студента
-    /// </summary>
-    [HttpPost("CreateStudentAnswer")]
-    public async Task<ActionResult<DataResult<StudentAnswerDto>>> Create(CreateStudentAnswerDto dto)
-    {
-        var response = await _studentAnswerService.CreateAsync(dto);
-        if (response.IsSuccess)
-        {
-            return Ok(response);
-        }
-        return BadRequest(response);
-    }
-
-    /// <summary>
-    /// Обновляет ответ студента (оценивание)
-    /// </summary>
-    [HttpPut("UpdateStudentAnswer")]
-    public async Task<ActionResult<DataResult<StudentAnswerDto>>> Update(UpdateStudentAnswerDto dto)
-    {
-        var response = await _studentAnswerService.UpdateAsync(dto);
-        if (response.IsSuccess)
-        {
-            return Ok(response);
-        }
-        return BadRequest(response);
-    }
-
-    /// <summary>
     /// Удаляет ответ студента
     /// </summary>
-    [HttpDelete("{id}")]
+    [HttpDelete]
     public async Task<ActionResult<DataResult<StudentAnswerDto>>> Delete(long id)
     {
         var response = await _studentAnswerService.DeleteAsync(id);
@@ -60,7 +33,7 @@ public class StudentAnswerController : ControllerBase
     /// <summary>
     /// Получает ответы конкретного студента
     /// </summary>
-    [HttpGet("GetByIdUser")]
+    [HttpGet("{userId}")]
     public async Task<ActionResult<CollectionResult<StudentAnswerDto>>> GetByUserId(long userId)
     {
         var response = await _studentAnswerService.GetByUserIdAsync(userId);

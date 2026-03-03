@@ -11,18 +11,11 @@ namespace SkillShare.Domain.Interfaces.Services;
 public interface IStudentAnswerService
 {
     /// <summary>
-    /// Создает новый ответ студента на вопрос
+    /// Удаление ответов студентов
     /// </summary>
-    Task<DataResult<StudentAnswerDto>> CreateAsync(CreateStudentAnswerDto dto, CancellationToken ct = default);
-
-    /// <summary>
-    /// Обновляет существующий ответ студента (выставляется оценка учителем)
-    /// </summary>
-    Task<DataResult<StudentAnswerDto>> UpdateAsync(UpdateStudentAnswerDto dto, CancellationToken ct = default);
-
-    /// <summary>
-    /// Удаляет ответ студента по идентификатору
-    /// </summary>
+    /// <param name="id"></param>
+    /// <param name="ct"></param>
+    /// <returns></returns>
     Task<DataResult<StudentAnswerDto>> DeleteAsync(long id, CancellationToken ct = default);
 
     /// <summary>

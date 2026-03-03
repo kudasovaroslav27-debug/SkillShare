@@ -19,7 +19,7 @@ public class CourseConfiguration : IEntityTypeConfiguration<Course>
         builder.HasOne(c => c.Parent)
                .WithMany(c => c.Children)
                .HasForeignKey(c => c.ParentId)
-               .OnDelete(DeleteBehavior.Restrict);
+               .OnDelete(DeleteBehavior.SetNull);
 
         builder.HasOne(c => c.Author)
                .WithMany(u => u.Courses)

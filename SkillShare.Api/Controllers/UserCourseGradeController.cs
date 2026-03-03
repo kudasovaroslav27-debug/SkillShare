@@ -8,6 +8,7 @@ using SkillShare.Domain.Result;
 namespace SkillShare.Api.Controllers;
 
 [ApiController]
+[Route("api/v{version:apiVersion}/UserCourseGrades")]
 public class UserCourseGradeController : ControllerBase
 {
     private readonly IUserCourseGradeService _gradeService;
@@ -19,7 +20,7 @@ public class UserCourseGradeController : ControllerBase
     /// <summary>
     /// Получить оценку по Id
     /// </summary>
-    [HttpGet("ById")]
+    [HttpGet("grade/{id}")]
     public async Task<ActionResult<DataResult<UserCourseGradeDto>>> GetById(long id)
     {
         var response = await _gradeService.GetByIdAsync(id);
@@ -33,7 +34,7 @@ public class UserCourseGradeController : ControllerBase
     /// <summary>
     /// Получить оценку по Id
     /// </summary>
-    [HttpGet("userId")]
+    [HttpGet("{userId}")]
     public async Task<ActionResult<DataResult<UserCourseGradeDto>>> GetByUserId(long userId)
     {
         var response = await _gradeService.GetByUserIdAsync(userId);
@@ -47,7 +48,7 @@ public class UserCourseGradeController : ControllerBase
     /// <summary>
     /// Удалить оценку пользователя
     /// </summary>
-    [HttpDelete("DeleteGrade")]
+    [HttpDelete]
     public async Task<ActionResult<DataResult<UserCourseGradeDto>>> Delete(long id)
     {
         var response = await _gradeService.DeleteAsync(id);

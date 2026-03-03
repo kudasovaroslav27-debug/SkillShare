@@ -6,6 +6,7 @@ using SkillShare.Domain.Result;
 namespace SkillShare.Api.Controllers;
 
 [ApiController]
+[Route("api/v{version:apiVersion}/lessons")]
 public class LessonController : ControllerBase
 {
     private readonly ILessonService _lessonService;
@@ -18,7 +19,7 @@ public class LessonController : ControllerBase
     /// <summary>
     /// Получить урок по Id
     /// </summary>
-    [HttpGet("GetById")]
+    [HttpGet("courses/{courseId}")]
     public async Task<ActionResult<DataResult<LessonDto>>> GetById(int id)
     {
         var response = await _lessonService.GetByIdAsync(id);
@@ -32,7 +33,7 @@ public class LessonController : ControllerBase
     /// <summary>
     /// Получить все уроки конкретного курса
     /// </summary>
-    [HttpGet("courseId")]
+    [HttpGet("{id}")]
     public async Task<ActionResult<CollectionResult<LessonDto>>> GetByCourseId(int courseId)
     {
         var response = await _lessonService.GetByCourseIdAsync(courseId);
@@ -46,7 +47,7 @@ public class LessonController : ControllerBase
     /// <summary>
     /// Создать новый урок
     /// </summary>
-    [HttpPost("CreateLesson")]
+    [HttpPost]
     public async Task<ActionResult<DataResult<LessonDto>>> Create(CreateLessonDto dto)
     {
         var response = await _lessonService.CreateAsync(dto);
@@ -60,7 +61,7 @@ public class LessonController : ControllerBase
     /// <summary>
     /// Обновить данные урока
     /// </summary>
-    [HttpPut("UpdateLesson")]
+    [HttpPut]
     public async Task<ActionResult<DataResult<LessonDto>>> Update(UpdateLessonDto dto)
     {
         var response = await _lessonService.UpdateAsync(dto);
@@ -74,7 +75,7 @@ public class LessonController : ControllerBase
     /// <summary>
     /// Удалить урок
     /// </summary>
-    [HttpDelete("DeleteLesson")]
+    [HttpDelete]
     public async Task<ActionResult<DataResult<LessonDto>>> Delete(int id)
     {
         var response = await _lessonService.DeleteAsync(id);

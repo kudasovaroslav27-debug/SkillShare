@@ -61,8 +61,6 @@ public static class DependencyInjection
         services.AddScoped<IValidator<CreateLessonDto>, CreateLessonDtoValidator>();
         services.AddScoped<IValidator<UpdateLessonDto>, UpdateLessonDtoValidator>();
 
-        services.AddScoped<IValidator<StudentAnswerDto>, StudentAnswerDtoValidator>();
-        services.AddScoped<IValidator<CreateStudentAnswerDto>, CreateStudentAnswerDtoValidator>();
         services.AddScoped<IValidator<UpdateStudentAnswerDto>, UpdateStudentAnswerDtoValidator>();
 
         services.AddScoped<IUserCourseGradeService, UserCourseGradeService>();

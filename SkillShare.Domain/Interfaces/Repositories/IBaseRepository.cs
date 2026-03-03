@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 using SkillShare.Domain.Interfaces.Databases;
@@ -16,4 +17,6 @@ public interface IBaseRepository<TEntity> : IStateSaveChanges
     TEntity Update(TEntity entity);
 
     void Remove(TEntity entity);
+
+    Task<bool> ExistsAsync(Expression<Func<TEntity, bool>> predicate, CancellationToken ct = default);
 }

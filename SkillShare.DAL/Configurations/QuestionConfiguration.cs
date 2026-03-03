@@ -22,7 +22,7 @@ public class QuestionConfiguration : IEntityTypeConfiguration<Question>
         builder.Property(q => q.Description).IsRequired().HasMaxLength(4000); 
         builder.Property(q => q.Difficult).HasConversion<int>().IsRequired();
 
-        builder.HasMany(q => q.Answers)
+        builder.HasMany(q => q.StudentAnswers)
                .WithOne(a => a.Question)
                .HasForeignKey(a => a.QuestionId)
                .OnDelete(DeleteBehavior.Cascade);

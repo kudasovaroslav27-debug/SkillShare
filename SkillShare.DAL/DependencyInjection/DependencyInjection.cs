@@ -37,7 +37,6 @@ public static class DependencyInjection
         services.AddScoped<IBaseRepository<Question>, BaseRepository<Question>>();
         services.AddScoped<IBaseRepository<Lesson>, BaseRepository<Lesson>>();
         services.AddScoped<IBaseRepository<Course>, BaseRepository<Course>>();
-        services.AddScoped<IBaseRepository<Answer>, BaseRepository<Answer>>();
         services.AddScoped<IBaseRepository<UserCourseGrade>, BaseRepository<UserCourseGrade>>();
     }
 }
