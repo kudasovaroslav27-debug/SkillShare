@@ -29,12 +29,7 @@ public class LessonService : ILessonService
         _unitOfWork = unitOfWork;
     }
 
-    /// <summary>
-    /// Получение урока по id
-    /// </summary>
-    /// <param name="id"></param>
-    /// <param name="ct"></param>
-    /// <returns></returns>
+    /// <inheritdoc/>
     public async Task<DataResult<LessonDto>> GetByIdAsync(int id, CancellationToken ct = default)
     {
         var lessonDto = await _unitOfWork.Lessons.GetAll()
@@ -51,12 +46,7 @@ public class LessonService : ILessonService
         return DataResult<LessonDto>.Success(lessonDto);
     }
 
-    /// <summary>
-    /// Пройти урок
-    /// </summary>
-    /// <param name="dto"></param>
-    /// <param name="ct"></param>
-    /// <returns></returns>
+    /// <inheritdoc/>
     public async Task<DataResult<float>> PassLessonAsync(PassLessonDto dto, CancellationToken ct = default)
     {
         var (validationResult, courseId) = await ValidateUserAndLesson(dto.UserId, dto.LessonId, ct);
@@ -76,12 +66,7 @@ public class LessonService : ILessonService
         return DataResult<float>.Success(lessonGrade);
     }
 
-    /// <summary>
-    /// Получение урока по id курса
-    /// </summary>
-    /// <param name="courseId"></param>
-    /// <param name="ct"></param>
-    /// <returns></returns>
+    /// <inheritdoc/>
     public async Task<CollectionResult<LessonDto>> GetByCourseIdAsync(int courseId, CancellationToken ct = default)
     {
         var courseExists = await _unitOfWork.Courses.ExistsAsync(x => x.Id == courseId, ct);
@@ -104,12 +89,7 @@ public class LessonService : ILessonService
         return CollectionResult<LessonDto>.Success(lessons);
     }
 
-    /// <summary>
-    /// Создание урока
-    /// </summary>
-    /// <param name="dto"></param>
-    /// <param name="ct"></param>
-    /// <returns></returns>
+    /// <inheritdoc/>
     public async Task<DataResult<LessonDto>> CreateAsync(CreateLessonDto dto, CancellationToken ct = default)
     {
         var courseExists = await _unitOfWork.Courses.ExistsAsync(x => x.Id == dto.CourseId, ct);
@@ -132,12 +112,7 @@ public class LessonService : ILessonService
         return DataResult<LessonDto>.Success(_mapper.Map<LessonDto>(newLesson));
     }
 
-    /// <summary>
-    /// Удаление урока
-    /// </summary>
-    /// <param name="id"></param>
-    /// <param name="ct"></param>
-    /// <returns></returns>
+    /// <inheritdoc/>
     public async Task<DataResult<LessonDto>> DeleteAsync(int id, CancellationToken ct = default)
     {
         var lesson = await _unitOfWork.Lessons.GetAll()
@@ -154,12 +129,7 @@ public class LessonService : ILessonService
         return DataResult<LessonDto>.Success(_mapper.Map<LessonDto>(lesson));
     }
 
-    /// <summary>
-    /// Обновление урока
-    /// </summary>
-    /// <param name="dto"></param>
-    /// <param name="ct"></param>
-    /// <returns></returns>
+    /// <inheritdoc/>
     public async Task<DataResult<LessonDto>> UpdateAsync(UpdateLessonDto dto, CancellationToken ct = default)
     {
         var lesson = await _unitOfWork.Lessons.GetAll()
@@ -179,9 +149,7 @@ public class LessonService : ILessonService
         return DataResult<LessonDto>.Success(_mapper.Map<LessonDto>(lesson));
     }
 
-    /// <summary>
-    /// Проверяет существование пользователя и урока. Возвращает CourseId для дальнейшей работы.
-    /// </summary>
+    /// <inheritdoc/>
     private async Task<(BaseResult Result, int CourseId)> ValidateUserAndLesson(long userId, int lessonId, CancellationToken ct)
     {
         var userExists = await _unitOfWork.Users.ExistsAsync(u => u.Id == userId, ct);
@@ -203,9 +171,7 @@ public class LessonService : ILessonService
         return (BaseResult.Success(), lessonData.CourseId);
     }
 
-    /// <summary>
-    /// Сверяет ответы студента с базой, считает баллы и готовит список StudentAnswer для вставки.
-    /// </summary>
+    /// <inheritdoc/>
     private async Task<(List<StudentAnswer> Answers, float Grade)> ProcessAnswers(PassLessonDto dto, CancellationToken ct)
     {
         var questionIds = dto.UserAnswers.Select(x => x.QuestionId).ToList();
@@ -240,9 +206,7 @@ public class LessonService : ILessonService
         return (answersToSave, totalGrade);
     }
 
-    /// <summary>
-    /// Обновляет существующую оценку за курс или создает новую.
-    /// </summary>
+    /// <inheritdoc/>
     private async Task UpdateCourseGrade(long userId, int courseId, float lessonGrade, CancellationToken ct)
     {
         var userCourseGrade = await _unitOfWork.UserCourseGrades.GetAll()

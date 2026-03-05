@@ -54,13 +54,7 @@ public class CourseService : ICourseService
         _unitOfWork = unitOfWork;
     }
 
-    /// <summary>
-    /// Создание курса с отправлением сообщения в сервис RabbitMq
-    /// </summary>
-    /// <param name="userId"></param>
-    /// <param name="dto"></param>
-    /// <param name="ct"></param>
-    /// <returns></returns>
+    /// <inheritdoc/>
     public async Task<DataResult<CourseDto>> CreateAsync(long userId, CreateCourseDto dto, CancellationToken ct = default)
     {
         var user = await _unitOfWork.Users.GetAll().AsNoTracking().Where(x => x.Id == userId).FirstOrDefaultAsync(ct);
@@ -83,12 +77,7 @@ public class CourseService : ICourseService
         return DataResult<CourseDto>.Success(_mapper.Map<CourseDto>(newCourse));
     }
 
-    /// <summary>
-    /// Удаление курса
-    /// </summary>
-    /// <param name="id"></param>
-    /// <param name="ct"></param>
-    /// <returns></returns>
+    /// <inheritdoc/>
     public async Task<DataResult<CourseDto>> DeleteAsync(int id, CancellationToken ct = default)
     {
         var course = await _unitOfWork.Courses.GetAll()
@@ -106,12 +95,7 @@ public class CourseService : ICourseService
         return DataResult<CourseDto>.Success(_mapper.Map<CourseDto>(course));
     }
 
-    /// <summary>
-    /// Получение курсов по id учителя
-    /// </summary>
-    /// <param name="AuthorId"></param>
-    /// <param name="ct"></param>
-    /// <returns></returns>
+    /// <inheritdoc/>
     public async Task<CollectionResult<CourseDto>> GetByAuthorIdAsync(long AuthorId, CancellationToken ct = default)
     {
         var courses = await _mediator.Send(new GetCourseByAuthorIdQuery(AuthorId), ct);
@@ -123,12 +107,7 @@ public class CourseService : ICourseService
         return CollectionResult<CourseDto>.Success(courses.ToList());
     }
 
-    /// <summary>
-    /// Получение курса по id
-    /// </summary>
-    /// <param name="courseId"></param>
-    /// <param name="ct"></param>
-    /// <returns></returns>
+    /// <inheritdoc/>
     public async Task<DataResult<CourseDto>> GetByIdAsync(int courseId, CancellationToken ct = default)
     {
         var course = await _mediator.Send(new GetCourseQuery(courseId), new CancellationToken());
@@ -142,11 +121,7 @@ public class CourseService : ICourseService
         return DataResult<CourseDto>.Success(course);
     }
 
-    /// <summary>
-    /// Получение всех курсов в виде дерева
-    /// </summary>
-    /// <param name="ct"></param>
-    /// <returns></returns>
+    /// <inheritdoc/>
     public async Task<CollectionResult<CourseNodeDto>> GetCourseTreeAsync(CancellationToken ct = default)
     {
         var tree = await _mediator.Send(new GetCourseTreeQuery(), ct);
@@ -159,12 +134,7 @@ public class CourseService : ICourseService
         return CollectionResult<CourseNodeDto>.Success(tree.Data);
     }
 
-    /// <summary>
-    /// Обновление курса
-    /// </summary>
-    /// <param name="dto"></param>
-    /// <param name="ct"></param>
-    /// <returns></returns>
+    /// <inheritdoc/>
     public async Task<DataResult<CourseDto>> UpdateAsync(UpdateCourseDto dto, CancellationToken ct = default)
     {
         var course = await _unitOfWork.Courses.GetAll()

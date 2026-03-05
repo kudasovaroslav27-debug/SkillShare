@@ -7,6 +7,7 @@ namespace SkillShare.DAL.Configurations;
 
 /// <summary>
 /// Настройки для сущности 
+/// <see cref="User" />
 /// </summary>
 public class UserConfiguration : IEntityTypeConfiguration<User>
 {

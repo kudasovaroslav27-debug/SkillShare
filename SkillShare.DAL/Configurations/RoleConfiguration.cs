@@ -7,6 +7,7 @@ namespace SkillShare.DAL.Configurations;
 
 /// <summary>
 /// Настройки для сущности 
+/// <see cref="Role" />
 /// </summary>
 public class RoleConfiguration : IEntityTypeConfiguration<Role>
 {

@@ -4,7 +4,7 @@ using SkillShare.Domain.Entities;
 namespace SkillShare.Application.Commands;
 
 /// <summary>
-/// Данные обновления курса
+///  обновления курса
 /// </summary>
 /// <param name="Id"></param>
 /// <param name="Title"></param>

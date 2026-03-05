@@ -7,6 +7,7 @@ namespace SkillShare.DAL.Configurations;
 
 /// <summary>
 /// Настройки для сущности 
+/// <see cref="Question" />
 /// </summary>
 public class QuestionConfiguration : IEntityTypeConfiguration<Question>
 {

@@ -6,6 +6,7 @@ namespace SkillShare.DAL.Configurations;
 
 /// <summary>
 /// Настройки для сущности 
+/// <see cref="Lesson" />
 /// </summary>
 public class LessonConfiguration : IEntityTypeConfiguration<Lesson>
 {

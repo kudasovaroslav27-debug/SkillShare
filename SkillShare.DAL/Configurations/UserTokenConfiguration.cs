@@ -6,6 +6,7 @@ namespace SkillShare.DAL.Configurations;
 
 /// <summary>
 /// Настройки для сущности 
+/// <see cref="UserToken" />
 /// </summary>
 public class UserTokenConfiguration : IEntityTypeConfiguration<UserToken>
 {

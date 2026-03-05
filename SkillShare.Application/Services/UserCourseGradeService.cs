@@ -25,12 +25,7 @@ public class UserCourseGradeService : IUserCourseGradeService
         _unitOfWork = unitOfWork;
     }
 
-    /// <summary>
-    /// Получение оценки пользователся за курс по id
-    /// </summary>
-    /// <param name="id"></param>
-    /// <param name="ct"></param>
-    /// <returns></returns>
+    /// <inheritdoc/>
     public async Task<DataResult<UserCourseGradeDto>> GetByIdAsync(long id, CancellationToken ct = default)
     {
         var grade = await _unitOfWork.UserCourseGrades.GetAll()
@@ -47,12 +42,7 @@ public class UserCourseGradeService : IUserCourseGradeService
         return DataResult<UserCourseGradeDto>.Success(grade);
     }
 
-    /// <summary>
-    /// Получение оценки пользователя за курс по его id
-    /// </summary>
-    /// <param name="userId"></param>
-    /// <param name="ct"></param>
-    /// <returns></returns>
+    /// <inheritdoc/>
     public async Task<CollectionResult<UserCourseGradeDto>> GetByUserIdAsync(long userId, CancellationToken ct = default)
     {
         var userExists = await _unitOfWork.Users.ExistsAsync(x => x.Id == userId, ct);
@@ -75,12 +65,7 @@ public class UserCourseGradeService : IUserCourseGradeService
         return CollectionResult<UserCourseGradeDto>.Success(grades);
     }
 
-    /// <summary>
-    /// Удаление оценки пользователя за курс по id
-    /// </summary>
-    /// <param name="id"></param>
-    /// <param name="ct"></param>
-    /// <returns></returns>
+    /// <inheritdoc/>
     public async Task<DataResult<UserCourseGradeDto>> DeleteAsync(long id, CancellationToken ct = default)
     {
         var grade = await _unitOfWork.UserCourseGrades.GetAll()
