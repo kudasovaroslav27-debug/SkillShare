@@ -62,4 +62,4 @@
   Скопируйте AccessToken из ответа и вставьте его в окно Authorize в Swagger (формат: Bearer {token}).
 3. Прохождение урока:
   Метод POST /lessons/pass принимает массив ваших ответов на вопросы. Система автоматически рассчитает балл и обновит ваш прогресс по курсу.
-Developed with ❤️ using .NET 9
+- Developed with ❤️ using .NET 9
